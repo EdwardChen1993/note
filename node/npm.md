@@ -140,7 +140,7 @@ ncu -g
 ncu -u
 ```
 
-上述命令只是更新package.json文件的内容，并没有修改node_modules目录下的依赖包。所以需要执行以下命令更新node_modules目录下的依赖包：
+注意：上述命令只是更新package.json文件的内容，并没有修改node_modules目录下的依赖包。所以需要执行以下命令更新node_modules目录下的依赖包：
 
 ```shell
 rm -rf node_modules/
