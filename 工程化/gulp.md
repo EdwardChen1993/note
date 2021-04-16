@@ -10,7 +10,7 @@ Gulp.js 是一个自动化构建工具，开发者可以使用它在项目开发
 
 ## 安装
 
-```shell
+```bash
 npm install --save-dev gulp
 ```
 

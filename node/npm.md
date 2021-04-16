@@ -12,7 +12,7 @@
 
 依次按提示填入包名、版本、描述、github地址、关键字、license等
 
-```shell
+```bash
 npm init
 ```
 
@@ -26,7 +26,7 @@ npm init
 
 方法二、使用npm命令注册（注册成功后自动登录）：
 
-```shell
+```bash
 npm adduser
 ```
 
@@ -36,7 +36,7 @@ npm adduser
 
 如果使用第二步中的方法一，需要输入账号、密码、邮箱登录。使用方法二则不需要。
 
-```shell
+```bash
 npm login
 ```
 
@@ -44,7 +44,7 @@ npm login
 
 ### 第四步、发布包，上传到npm包服务器
 
-```shell
+```bash
 npm publish
 ```
 
@@ -56,7 +56,7 @@ npm publish
 
 要切换回原始的npm镜像，命令：
 
-```shell
+```bash
 npm config set registry https://registry.npmjs.org
 ```
 
@@ -68,7 +68,7 @@ npm config set registry https://registry.npmjs.org
 
 ### 第一步、修改包的版本
 
-```shell
+```bash
 npm version patch
 ```
 
@@ -78,7 +78,7 @@ npm version patch
 
 ### 第二步、重新发布包
 
-```shell
+```bash
 npm publish
 ```
 
@@ -90,7 +90,7 @@ npm publish
 
 ### 删除指定版本
 
-```shell
+```bash
 npm unpublish 包名@版本号
 ```
 
@@ -98,7 +98,7 @@ npm unpublish 包名@版本号
 
 ### 删除整个包
 
-```shell
+```bash
 npm unpublish 包名 --force
 ```
 
@@ -106,13 +106,13 @@ npm unpublish 包名 --force
 
 
 
-# npm-check-updates
+## npm-check-updates
 
 npm包高效升级插件。
 
 安装：
 
-```shell
+```bash
 npm install -g npm-check-updates
 ```
 
@@ -120,7 +120,7 @@ npm install -g npm-check-updates
 
 显示当前目录下项目的任何新依赖项:
 
-```shell
+```bash
 ncu
 ```
 
@@ -128,7 +128,7 @@ ncu
 
 检查全局的包：
 
-```shell
+```bash
 ncu -g
 ```
 
@@ -136,18 +136,49 @@ ncu -g
 
 升级项目的包文件:
 
-```shell
+```bash
 ncu -u
 ```
 
 注意：上述命令只是更新package.json文件的内容，并没有修改node_modules目录下的依赖包。所以需要执行以下命令更新node_modules目录下的依赖包：
 
-```shell
+```bash
 rm -rf node_modules/
 npm install
 ```
 
 
+
+
+
+## 语义化版本
+
+### 示例
+
+1.2.3-beta.1-meta
+
+1——>主版本
+
+2——>次版本
+
+3——>修订版本
+
+beta——>先行版本
+
+1——>先行版本的版本号
+
+meta——>元数据，对版本号做简要描述
+
+
+
+### 版本名称释义
+
+| 名称    | 释义                                                         |
+| ------- | ------------------------------------------------------------ |
+| alpha   | 内部测试版本，除非是内部测试人员，否则不推荐使用，有很多bug。 |
+| beta    | 公测版本，消除了严重错误，还是会有缺陷，这个阶段还会持续加入新的功能。 |
+| rc      | Release Candidate，发行候选版本。这个版本不会加入新的功能，主要排错，修改bug。 |
+| release | 发行版本。                                                   |
 
 
 

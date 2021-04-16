@@ -10,7 +10,7 @@ Yeoman 是一种高效、开源的 Web 应用脚手架搭建系统，意在精�
 
 ## 安装
 
-```shell
+```bash
 npm install -g yo
 npm install -g generator-generator
 ```
@@ -19,7 +19,7 @@ npm install -g generator-generator
 
 ## 生成脚手架
 
-```shell
+```bash
 yo generator
 ```
 
@@ -80,13 +80,13 @@ yo generator
 
    [参考](https://yeoman.io/authoring/)
 
-   ```shell
+   ```bash
    npm link
    ```
 
 4. 新建新的项目目录，并执行 yo+脚手架名 ，即会自动生成项目目录和安装依赖。示例如下：
 
-   ```shell
+   ```bash
    mkdir generator-test
    cd generator-test
    yo edward-gulp
@@ -100,25 +100,25 @@ yo generator
 
 1. 登录npm
 
-```shell
+```bash
 npm login
 ```
 
 2. 发布到npm
 
-```shell
+```bash
 npm publish
 ```
 
 3. 在本地安装自己的脚手架
 
-```shell
+```bash
 npm i generator-edward-gulp
 ```
 
 4. 使用脚手架生成项目
 
-```shell
+```bash
 yo edward-gulp
 ```
 

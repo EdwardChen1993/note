@@ -60,7 +60,7 @@ module.exports = {
 
 或者从 [CLI](https://www.webpackjs.com/api/cli/) 参数中传递：
 
-```shell
+```bash
 webpack --mode=production
 ```
 
@@ -86,7 +86,7 @@ webpack --mode=production
 
 命令行输入：
 
-```shell
+```bash
 node --inspect-brk ./node_modules/.bin/webpack --inline --progress
 ```
 
@@ -94,7 +94,7 @@ node --inspect-brk ./node_modules/.bin/webpack --inline --progress
 
 在chrome浏览器地址输入：
 
-```shell
+```bash
 chrome://inspect/#devices
 ```
 

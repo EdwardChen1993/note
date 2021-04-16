@@ -22,7 +22,7 @@ macos：
 
 ### 安装多版本node
 
-```shell
+```bash
 nvm install 版本号
 ```
 
@@ -30,7 +30,7 @@ nvm install 版本号
 
 ### 列出本地已安装实例
 
-```shell
+```bash
 nvm ls
 ```
 
@@ -40,13 +40,13 @@ nvm ls
 
 macos：
 
-```shell
+```bash
 nvm ls-remote
 ```
 
 windows：
 
-```shell
+```bash
 nvm ls available
 ```
 
@@ -56,13 +56,13 @@ nvm ls available
 
 切换到具体版本：
 
-```shell
+```bash
 nvm use 版本号
 ```
 
 切换到最新版本：
 
-```shell
+```bash
 nvm use node
 ```
 

@@ -16,7 +16,7 @@ docker 是一个开源的应用容器引擎，让开发者可以打包他们的�
 
 ## docker的安装
 
-参考官方文档：
+官方文档：
 
 - [Mac](https://docs.docker.com/docker-for-mac/install/)
 - [Windows](https://docs.docker.com/docker-for-windows/install/)
@@ -28,7 +28,7 @@ docker 是一个开源的应用容器引擎，让开发者可以打包他们的�
 
 安装完成后，运行下面的命令，验证是否安装成功：
 
-```shell
+```bash
 docker version
 ```
 
@@ -36,7 +36,7 @@ docker version
 
 启动docker：
 
-```shell
+```bash
  systemctl start docker
 ```
 
@@ -44,7 +44,7 @@ docker version
 
 检查docker是否安装正确：
 
-```shell
+```bash
 docker run hello-world
 ```
 
@@ -56,13 +56,13 @@ docker中国区镜像加速
 
 可以令pull拉取的时候优先使用中国区镜像加速：
 
-```shell
+```bash
 vi /etc/docker/daemon.json
 ```
 
 写入如下内容：
 
-```shell
+```json
 {
   "registry-mirrors": ["https://registry.docker-cn.com"]
 }
@@ -70,7 +70,7 @@ vi /etc/docker/daemon.json
 
 然后重启docker使配置生效：
 
-```shell
+```bash
 systemctl restart docker
 ```
 
@@ -80,15 +80,25 @@ systemctl restart docker
 
 查看正在运行的容器：
 
-```shell
+```bash
 docker ps
 ```
 
 
 
-启动容器：
+启动新的容器：
 
-```shell
+```bash
+docker run 容器名
+```
+
+docker run相当于执行了两步操作：将镜像放入容器中（docker create）,然后将容器启动，使之变成运行时容器（docker start）。
+
+
+
+启动已存在的容器：
+
+```bash
 docker start 容器名
 ```
 
@@ -96,7 +106,7 @@ docker start 容器名
 
 停止容器：
 
-```shell
+```bash
 docker stop 容器名
 ```
 
@@ -104,7 +114,7 @@ docker stop 容器名
 
 重启容器：
 
-```shell
+```bash
 docker restart 容器名
 ```
 
@@ -112,7 +122,7 @@ docker restart 容器名
 
 删除容器，正在运行的容器必须先停止才能删除：
 
-```shell
+```bash
 docker rm 容器名
 ```
 
@@ -120,7 +130,7 @@ docker rm 容器名
 
 打印容器信息：
 
-```shell
+```bash
 docker logs 容器名
 ```
 
@@ -144,7 +154,7 @@ docker-compose工具是一个批量工具，用于运行与管理多个docker容
 
 检查docker-compose是否安装正确：
 
-```shell
+```bash
 docker-compose --version
 ```
 
@@ -154,7 +164,7 @@ docker-compose --version
 
 第一步、新建docker-compose.yml：
 
-```shell
+```bash
 vi docker-compose.yml
 ```
 
@@ -162,7 +172,7 @@ vi docker-compose.yml
 
 第二步、写入服务配置：
 
-```shell
+```bash
 version: '3'
 services:
   mysql1:
@@ -183,9 +193,13 @@ services:
 
 第三步、启动docker-compose：
 
-```shell
+```bash
 docker-compose up
 ```
+
+参数：
+
++ -d：容器启动后会进入后台
 
 
 
@@ -199,7 +213,7 @@ docker仓库，用于拉取镜像，类似npm
 
 登录：
 
-```shell
+```bash
 docker login
 ```
 
@@ -207,7 +221,7 @@ docker login
 
 查看docker镜像：
 
-```shell
+```bash
 docker image ls
 ```
 
@@ -215,7 +229,7 @@ docker image ls
 
 提交镜像：
 
-```shell
+```bash
 docker commit 容器id dockerhub用户名/镜像名:版本号
 ```
 
@@ -223,7 +237,7 @@ docker commit 容器id dockerhub用户名/镜像名:版本号
 
 推送镜像到dockerhub：
 
-```shell
+```bash
 docker push dockerhub用户名/镜像名:版本号
 ```
 
@@ -231,7 +245,7 @@ docker push dockerhub用户名/镜像名:版本号
 
 从dockerhub拉取镜像：
 
-```shell
+```bash
 docker pull dockerhub用户名/镜像名
 ```
 

@@ -6,7 +6,7 @@
 
 ## 查看linux发行版本
 
-```shell
+```bash
 lsb_release -a
 ```
 
@@ -14,7 +14,7 @@ lsb_release -a
 
 ## 查看linux内核版本
 
-```shell
+```bash
 uname -a
 ```
 
@@ -24,13 +24,13 @@ uname -a
 
 KB为计量单位：
 
-```shell
+```bash
 df
 ```
 
 MB为计量单位：
 
-```shell
+```bash
 df -Th
 ```
 
@@ -98,11 +98,17 @@ var：
 
 
 
+tmp：
+
+存放临时文件
+
+
+
 ## CPU/内存/进程
 
 查看linuxCPU/内存/进程资源：
 
-```shell
+```bash
 top
 ```
 
@@ -114,7 +120,7 @@ cd：
 
 切换的目标目录
 
-```shell
+```bash
 cd 目录名
 ```
 
@@ -124,7 +130,7 @@ ls：
 
 显示指定工作目录下之内容
 
-```shell
+```bash
 ls 
 ```
 
@@ -144,7 +150,7 @@ mkdir：
 
 创建目录
 
-```shell
+```bash
 mkdir 目录名
 ```
 
@@ -154,8 +160,8 @@ mkdir 目录名
 
 若a目录原本不存在，则建立一个。（注：本例若不加 -p 参数，且原本a目录不存在，则产生错误。）
 
-```shell
-mkdir -p a/b
+```bash
+mkdir -p 一级目录/二级目录
 ```
 
 参数：
@@ -168,7 +174,7 @@ touch：
 
 修改文件或者目录的时间属性，包括存取时间和更改时间。若文件不存在，系统会建立一个新的文件。
 
-```shell
+```bash
 touch 文件名
 ```
 
@@ -178,7 +184,7 @@ vi/vim：
 
 使用vim编辑器编辑文件
 
-```shell
+```bash
 vi 文件名
 ```
 
@@ -211,7 +217,7 @@ cat：
 
 查看文件内容
 
-```shell
+```bash
 cat 文件名
 ```
 
@@ -221,7 +227,7 @@ echo：
 
 写入文本内容
 
-```shell
+```bash
 echo 内容 > 文件名
 ```
 
@@ -236,7 +242,7 @@ rm：
 
 删除一个文件或者目录
 
-```shell
+```bash
 rm 文件名/目录名
 ```
 
@@ -250,7 +256,7 @@ rm 文件名/目录名
 
 删除当前目录下的所有文件及目录：
 
-```shell
+```bash
 rm  -rf  * 
 ```
 
@@ -264,7 +270,7 @@ ps：
 
 查看进程
 
-```shell
+```bash
 ps
 ```
 
@@ -292,7 +298,7 @@ ps命令用于查看当前正在运行的进程，最常用的方法是ps aux，
 
 例如表示查看所有进程里CMD是java的进程信息
 
-```shell
+```bash
 ps -ef | grep java
 ```
 
@@ -302,7 +308,7 @@ kill：
 
 通常用ps查看进程PID，用kill命令终止进程
 
-```shell
+```bash
 kill -9 pid
 ```
 
@@ -316,7 +322,7 @@ kill -9 pid
 
 查看系统服务状态：
 
-```shell
+```bash
 service sshd status
 ```
 
@@ -324,7 +330,7 @@ service sshd status
 
 关闭系统服务：
 
-```shell
+```bash
 service sshd stop
 ```
 
@@ -332,7 +338,7 @@ service sshd stop
 
 重启系统服务：
 
-```shell
+```bash
 service sshd restart
 ```
 
@@ -340,7 +346,7 @@ service sshd restart
 
 查看当前目录路径：
 
-```shell
+```bash
 pwd
 ```
 
@@ -350,21 +356,21 @@ pwd
 
 下载：
 
-```shell
+```bash
 wget 文件下载链接
 ```
 
 如果提示wget: 未找到命令，先使用yum安装wget：
 
-```shell
+```bash
 yum -y install wget
 ```
 
 
 
-解压：
+tar解压：
 
-```shell
+```bash
 tar zxvf 文件名
 ```
 
@@ -377,9 +383,9 @@ z代表gzip的压缩包；x代表解压；v代表显示过程信息；f代表后
 
 
 
-压缩：
+tar压缩：
 
-```shell
+```bash
 tar zcvf 压缩包名 目录名
 ```
 
@@ -387,7 +393,57 @@ tar zcvf 压缩包名 目录名
 
 查看本机ip：
 
-```shell
+```bash
  ip addr show
 ```
 
+
+
+zip解压：
+
+```bash
+unzip 文件名
+```
+
+
+
+zip压缩：
+
+```bash
+zip 压缩包名 目录名
+```
+
+参数：
+
++ -r：递归处理，将指定目录下的所有文件和子目录一并处理。
+
+
+
+chmod:
+
+控制用户对文件的权限
+
+```bash
+chmod 777 目录名/文件名
+```
+
+参数：
+
+- -R : 对目前目录下的所有文件与子目录进行相同的权限变更(即以递归的方式逐个变更)
+
+  
+
+chmod命令可以使用八进制数来指定权限。文件或目录的权限位是由9个权限位来控制，每三位为一组，它们分别是文件所有者（User）的读、写、执行，用户组（Group）的读、写、执行以及其它用户（Other）的读、写、执行。历史上，文件权限被放在一个比特掩码中，掩码中指定的比特位设为1，用来说明一个类具有相应的优先级。
+
+| #    | 权限           | rwx  | 二进制 |
+| :--- | :------------- | :--- | :----- |
+| 7    | 读 + 写 + 执行 | rwx  | 111    |
+| 6    | 读 + 写        | rw-  | 110    |
+| 5    | 读 + 执行      | r-x  | 101    |
+| 4    | 只读           | r--  | 100    |
+| 3    | 写 + 执行      | -wx  | 011    |
+| 2    | 只写           | -w-  | 010    |
+| 1    | 只执行         | --x  | 001    |
+| 0    | 无             | ---  | 000    |
+
+![img](https://www.runoob.com/wp-content/uploads/2014/08/rwx-standard-unix-permission-bits.png)
