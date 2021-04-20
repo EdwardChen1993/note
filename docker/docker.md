@@ -40,6 +40,8 @@ docker version
  systemctl start docker
 ```
 
+**注意：虚拟机每次关机后重启都需要重新启动docker。**
+
 
 
 检查docker是否安装正确：
@@ -94,7 +96,14 @@ docker run 容器名
 
 docker run相当于执行了两步操作：将镜像放入容器中（docker create）,然后将容器启动，使之变成运行时容器（docker start）。
 
+参数：
+- -d：在后台运行容器。
 
+- -p：`-p 8088:80`代表选择宿主机具体的8088端口映射到容器内部的80端口上了，访问`http://localhost:8088`即可。
+
+- --name：指定容器名。
+
+  
 
 启动已存在的容器：
 

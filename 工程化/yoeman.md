@@ -23,7 +23,7 @@ npm install -g generator-generator
 yo generator
 ```
 
-注意：脚手架名要以 generator- 为前缀。
+注意：脚手架名要以 generator- 为前缀，如：generator-edward-gulp。
 
 
 
@@ -89,9 +89,10 @@ yo generator
    ```bash
    mkdir generator-test
    cd generator-test
+   # 此处脚手架名 edward-gulp 不需要带 generator 前缀
    yo edward-gulp
-   ```
-
+```
+   
    
 
 ## 发布脚手架
@@ -113,7 +114,7 @@ npm publish
 3. 在本地安装自己的脚手架
 
 ```bash
-npm i generator-edward-gulp
+npm install -g generator-edward-gulp
 ```
 
 4. 使用脚手架生成项目
