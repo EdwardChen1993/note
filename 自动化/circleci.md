@@ -2,8 +2,6 @@
 
 # circleci
 
-
-
 ## 操作流程
 
 第一步、进入[官网](https://circleci.com)，使用github账户注册并授权。
