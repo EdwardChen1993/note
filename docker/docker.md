@@ -102,16 +102,29 @@ docker run相当于执行了两步操作：将镜像放入容器中（docker cre
 
 参数：
 - -d：在后台运行容器。
-
 - -p：`-p 8088:80`代表选择宿主机具体的8088端口映射到容器内部的80端口上了，访问`http://localhost:8088`即可。
-
 - -v：数据持久化，`-v 宿主机目录:容器目录`，将宿主机目录挂载到容器目录
-
 - -it：以交互模式运行启动容器
-
 - --name：指定容器名。
+- --restart：设置容器的重启策略，always：当docker重启时，容器总是自动启动。
 
-  
+
+
+在运行的容器中执行命令：
+
+```bash
+docker exec 容器名 命令
+# 示例
+docker exec -it mynginx /bin/bash
+```
+
+参数：
+
++ -d：分离模式: 在后台运行
++ -i：即使没有附加也保持STDIN 打开
++ -t：分配一个伪终端
+
+
 
 启动已存在的容器：
 
@@ -137,11 +150,13 @@ docker restart 容器名
 
 
 
-删除容器，正在运行的容器必须先停止才能删除：
+删除容器：
 
 ```bash
 docker rm 容器名
 ```
+
+注意：正在运行的容器必须先停止才能删除。
 
 
 
@@ -247,7 +262,7 @@ docker image ls
 提交镜像：
 
 ```bash
-docker commit 容器id dockerhub用户名/镜像名:版本号
+docker commit 容器id 账号名/镜像名:版本号
 ```
 
 
@@ -255,7 +270,7 @@ docker commit 容器id dockerhub用户名/镜像名:版本号
 推送镜像到dockerhub：
 
 ```bash
-docker push dockerhub用户名/镜像名:版本号
+docker push 账号名/镜像名:版本号
 ```
 
 
@@ -263,8 +278,26 @@ docker push dockerhub用户名/镜像名:版本号
 从dockerhub拉取镜像：
 
 ```bash
-docker pull dockerhub用户名/镜像名
+docker pull 账号名/镜像名
 ```
+
+
+
+运行镜像：
+
+```bash
+docker run 账号名/镜像名
+```
+
+参数：
+
++ -v：指定宿主机的某目录作为数据卷挂载到容器中，使该容器与宿主机共享此目录 。示例：
+
+  ```bash
+  docker run -v 宿主机目录:容器目录 镜像名
+  ```
+
+  
 
 
 
@@ -277,8 +310,6 @@ docker pull dockerhub用户名/镜像名
 + 用于产生Docker镜像
 + Dockerfile按照步骤构建，产生文件系统
 + Dockerfile是镜像的配置文件，高度可配置
-
-
 
 
 

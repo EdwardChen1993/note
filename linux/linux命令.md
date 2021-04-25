@@ -495,5 +495,34 @@ chmod命令可以使用八进制数来指定权限。文件或目录的权限位
 firewall-cmd --add-port=端口号/tcp --permanent
 # 重新加载防火墙规则
 firewall-cmd --reload
+# 查看防火墙放行规则
+firewall-cmd --list-all
+```
+
+
+
+系统重启：
+
+```bash
+reboot
+# 立刻重启(root用户使用)
+shutdown -r now
+# 过10分钟自动重启(root用户使用)
+shutdown -r 10
+```
+
+
+
+系统关机：
+
+```bash
+# 立刻关机
+halt
+# 立刻关机
+poweroff
+# 立刻关机(root用户使用)
+shutdown -h now
+# 10分钟后自动关机
+shutdown -h 10
 ```
 

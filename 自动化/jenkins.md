@@ -29,7 +29,7 @@
 [参考](https://github.com/jenkinsci/docker)
 
 ```bash
-docker run --name jenkins_test -itd -p 11005:8080 -p 50000:50000 jenkins/jenkins:lts
+docker run -d --restart=always -u root -v /data/jenkins/jenkins_home:/var/jenkins_home -v /var/run/docker.sock:/var/run/docker.sock -v $(which docker):/usr/bin/docker -v /usr/local/go:/usr/local/go -p 11005:8080 -p 50000:50000 --name jenkins_test jenkins/jenkins:lts
 # 启动后放行端口
 firewall-cmd --add-port=11005/tcp --permanent
 firewall-cmd --reload
@@ -243,14 +243,71 @@ docker logs jenkins_test -f
 
 第十步、在jenkins中，在构建中选择执行 shell，输入你要执行的shell命令，最后点击保存。
 
+备注：当在jenkins中安装Build with Parameters插件，可以使用”General“的”参数化构建过程“来添加自定义参数，然后在shell脚本中直接使用 `${参数名}` 即可。点击保存后，点击左侧Build with Parameters，然后点击开始构建即可。
+
 ![image-20210422111217674](jenkins.assets/image-20210422111217674.png)
 
+![image-20210423155042117](jenkins.assets/image-20210423155042117.png)
+
+![image-20210423155148212](jenkins.assets/image-20210423155148212.png)
+
+![image-20210423155449441](jenkins.assets/image-20210423155449441.png)
+
+备注：shell脚本代码如下：
+
+```shell
+#!/bin/bash
+
+# 设置运行容器的名称
+CONTAINER=${container_name}
+PORT=${port}
+
+# 使用docker build进行构建
+# 使用--no-cache参数，保证每次不使用缓存
+docker build --no-cache -t ${image_name}:${tag} .
+
+# RUUNING变量去记录docker容器的运行状态
+# 用于后面的判断
+RUNNING=$(docker inspect --format="{{ .State.Running }}" $CONTAINER 2>/dev/null)
+
+if [ ! -n $RUNNING ]; then
+  echo "$CONTAINER does not exist."
+  return 1
+fi
+
+# 这里是指容器已经创建，但是没有运行，可能是人工手动停止了。
+# 或者是docker daemon重启后，容器停止了
+if [ "$RUNNING" == "false" ]; then
+  echo "$CONTAINER is not running."
+  return 2
+else
+  echo "$CONTAINER is running"
+  # 删除同名容器
+  matchingStarted=$(docker ps --filter="name=$CONTAINER" -q | xargs)
+  if [ -n $matchingStarted ]; then
+    # 删除同名容器，先停止
+    docker stop $matchingStarted
+  fi
+
+  matching=$(docker ps -a --filter="name=$CONTAINER" -q | xargs)
+  if [ -n $matching ]; then
+    # 删除同名容器，再删除
+    docker rm $matching
+  fi
+fi
+
+# 创建容器
+# 注意这里的80端口，与自己的EXPOSE指定的端口要一致
+docker run -itd --name $CONTAINER -p $PORT:80 ${image_name}:${tag}
+```
 
 
-第十一步、在本地克隆gitlab对应的项目仓库，修改代码，然后提交并推送到gitlab。稍等片刻在jenkins中的构建队列即可看到对应的任务正在构建。点击任务名进入任务详情，在Build History上点击序号上显示的控制台输出，即可查看到构建过程中的控制台输出。
+
+第十一步、在本地克隆gitlab对应的项目仓库，修改代码，然后提交并推送到gitlab。稍等片刻在jenkins中的构建队列即可看到对应的任务正在构建。点击任务名进入任务详情，在Build History上点击序号上显示的控制台输出，即可查看到构建过程中的控制台输出。构建成功后，即可在浏览器使用 ip+端口 访问服务。
 
 ![image-20210422103705650](jenkins.assets/image-20210422103705650.png)
 
 ![image-20210422103847102](jenkins.assets/image-20210422103847102.png)
 
-![image-20210422103902576](jenkins.assets/image-20210422103902576.png)
+![image-20210425143102948](jenkins.assets/image-20210425143102948.png)
+
