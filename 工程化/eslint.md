@@ -41,7 +41,7 @@ ESLint 附带有大量的规则。你可以使用注释或配置文件修改你�
 
 ## extends 和 plugins 区别
 
-extends：
+**extends：**
 
 对于不同项目，如果希望使用相同的 rules，直接复制粘贴显然不是一个好方法，一是 rules 太多，配置文件会显得很乱，二是无法同步更新。
 
@@ -49,7 +49,7 @@ extends：
 
 
 
-plugins：
+**plugins：**
 
 虽然官方提供了很多规则，但是总有覆盖不到的情况。这时候可以使用 plugin 定义自己的规则。引入 plugin 可以理解为引入了额外的 rules，需要在 rules、extends 中定义后才会生效。
 

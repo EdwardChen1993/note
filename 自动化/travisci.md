@@ -6,13 +6,13 @@
 
 ## 操作流程
 
-第一步、进入[官网](https://travis-ci.com)，使用github账户注册并授权。
+**第一步、进入[官网](https://travis-ci.com)，使用github账户注册并授权。**
 
 ![image-20210421103818874](travisci.assets/image-20210421103818874.png)
 
 
 
-第二步、同步github账户数据和激活所有仓库，激活后点击列表中对应的仓库即可进入仓库详情。
+**第二步、同步github账户数据和激活所有仓库，激活后点击列表中对应的仓库即可进入仓库详情。**
 
 ![image-20210421103729687](travisci.assets/image-20210421103729687.png)
 
@@ -20,11 +20,11 @@
 
 
 
-第三步、在github上新建仓库，并克隆项目代码到本地。
+**第三步、在github上新建仓库，并克隆项目代码到本地。**
 
 
 
-第四步、在本地项目目录新建.travis.yml文件，用于配置travisci。
+**第四步、在本地项目目录新建.travis.yml文件，用于配置travisci。**
 
 详细配置参考：[文档](https://docs.travis-ci.com/user/job-lifecycle/)
 
@@ -64,7 +64,7 @@ deploy:
 
 
 
-第五步、在github中的settings创建personal access token，创建成功后复制生成的token。
+**第五步、在github中的settings创建personal access token，创建成功后复制生成的token。**
 
 ![image-20210421104444723](travisci.assets/image-20210421104444723.png)
 
@@ -74,7 +74,7 @@ deploy:
 
 
 
-第六步、在travisci的More options的Settings中，将第四步生成的token添加到环境变量。
+**第六步、在travisci的More options的Settings中，将第四步生成的token添加到环境变量。**
 
 ![image-20210421104330962](travisci.assets/image-20210421104330962.png)
 
@@ -82,7 +82,7 @@ deploy:
 
 
 
-第七步、修改项目代码，然后提交并推送到github。稍等片刻就会自动触发travisci的构建任务，自动执行.travis.yml中定义的install、script和deploy任务进行构建部署。
+**第七步、修改项目代码，然后提交并推送到github。稍等片刻就会自动触发travisci的构建任务，自动执行.travis.yml中定义的install、script和deploy任务进行构建部署。**
 
 ![image-20210421110338427](travisci.assets/image-20210421110338427.png)
 

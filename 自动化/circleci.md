@@ -4,15 +4,15 @@
 
 ## 操作流程
 
-第一步、进入[官网](https://circleci.com)，使用github账户注册并授权。
+**第一步、进入[官网](https://circleci.com)，使用github账户注册并授权。**
 
 ![image-20210420160330059](circleci.assets/image-20210420160330059.png)
 
-第二步、在github上新建仓库，并克隆项目代码到本地。
+**第二步、在github上新建仓库，并克隆项目代码到本地。**
 
 
 
-第三步、在本地项目目录新建.circleci/config.yml文件，用于配置circleci。
+**第三步、在本地项目目录新建.circleci/config.yml文件，用于配置circleci。**
 
 详细配置参考：[文档](https://circleci.com/docs/2.0/configuration-reference)
 
@@ -134,13 +134,13 @@ echo "Finished Deployment!"
 
 
 
-第四步、在circleci官网进入Go to app，点击左侧Project，选择仓库，点击Set Up Project。
+**第四步、在circleci官网进入Go to app，点击左侧Project，选择仓库，点击Set Up Project。**
 
 ![image-20210420160243079](circleci.assets/image-20210420160243079.png)
 
 
 
-第五步、进入对应的project，点击右上角的Project Settings。然后点击左侧的SSH Keys，再点击右侧User Key的Add User Key。然后将Deploy Key写入到config.yml文件的add_ssh_keys/fingerprints中。
+**第五步、进入对应的project，点击右上角的Project Settings。然后点击左侧的SSH Keys，再点击右侧User Key的Add User Key。然后将Deploy Key写入到config.yml文件的add_ssh_keys/fingerprints中。**
 
 ![image-20210420160425118](circleci.assets/image-20210420160425118.png)
 
@@ -148,6 +148,6 @@ echo "Finished Deployment!"
 
 
 
-第六步、修改项目代码，然后提交并推送到github。稍等片刻就会自动触发circleci的构建任务，自动执行config.yml中定义的steps任务进行构建部署。
+**第六步、修改项目代码，然后提交并推送到github。稍等片刻就会自动触发circleci的构建任务，自动执行config.yml中定义的steps任务进行构建部署。**
 
 ![image-20210420161359689](circleci.assets/image-20210420161359689.png)![image-20210420161945754](circleci.assets/image-20210420161945754.png)

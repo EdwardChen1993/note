@@ -34,7 +34,7 @@ docker version
 
 
 
-启动docker：
+**启动docker：**
 
 ```bash
  systemctl start docker
@@ -54,7 +54,7 @@ docker run hello-world
 
 ## 镜像加速
 
-docker中国区镜像加速
+**docker使用中国区镜像加速**
 
 可以令pull拉取的时候优先使用中国区镜像加速：
 
@@ -78,9 +78,9 @@ systemctl restart docker
 
 
 
-## docker的操作
+## docker的命令
 
-查看正在运行的容器：
+**查看正在运行的容器：**
 
 ```bash
 docker ps
@@ -92,7 +92,7 @@ docker ps
 
 
 
-启动新的容器：
+**启动新的容器：**
 
 ```bash
 docker run 容器名
@@ -101,16 +101,16 @@ docker run 容器名
 docker run相当于执行了两步操作：将镜像放入容器中（docker create）,然后将容器启动，使之变成运行时容器（docker start）。
 
 参数：
-- -d：在后台运行容器。
+- -d：在后台运行容器，并打印容器id。
 - -p：`-p 8088:80`代表选择宿主机具体的8088端口映射到容器内部的80端口上了，访问`http://localhost:8088`即可。
-- -v：数据持久化，`-v 宿主机目录:容器目录`，将宿主机目录挂载到容器目录
+- -v：绑定挂载卷，数据持久化，`-v 宿主机目录:容器目录`，将宿主机目录挂载到容器目录
 - -it：以交互模式运行启动容器
 - --name：指定容器名。
 - --restart：设置容器的重启策略，always：当docker重启时，容器总是自动启动。
 
 
 
-在运行的容器中执行命令：
+**在运行的容器中执行命令：**
 
 ```bash
 docker exec 容器名 命令
@@ -120,13 +120,13 @@ docker exec -it mynginx /bin/bash
 
 参数：
 
-+ -d：分离模式: 在后台运行
++ -d：分离模式，守护进程在后台运行
 + -i：即使没有附加也保持STDIN 打开
-+ -t：分配一个伪终端
++ -t：分配一个伪终端（-it：交互式终端）
 
 
 
-启动已存在的容器：
+**启动已存在的容器：**
 
 ```bash
 docker start 容器名
@@ -134,7 +134,7 @@ docker start 容器名
 
 
 
-停止容器：
+**停止容器：**
 
 ```bash
 docker stop 容器名
@@ -142,7 +142,7 @@ docker stop 容器名
 
 
 
-重启容器：
+**重启容器：**
 
 ```bash
 docker restart 容器名
@@ -150,7 +150,7 @@ docker restart 容器名
 
 
 
-删除容器：
+**删除容器：**
 
 ```bash
 docker rm 容器名
@@ -160,7 +160,7 @@ docker rm 容器名
 
 
 
-打印容器信息：
+**打印容器信息：**
 
 ```bash
 docker logs 容器名
@@ -168,7 +168,17 @@ docker logs 容器名
 
 参数：
 
--f 持续打印
++ -f，--follow：跟踪实时日志输出
+
+
+
+**复制容器内部目录到宿主机目录：**
+
+```bash
+docker cp 容器id:容器目录 宿主机目录
+```
+
+
 
 
 
@@ -177,8 +187,6 @@ docker logs 容器名
 docker-compose工具是一个批量工具，用于运行与管理多个docker容器。
 
 官方文档：[链接](https://docs.docker.com/compose/)
-
-
 
 安装：[链接](https://docs.docker.com/compose/install/)
 
@@ -194,7 +202,7 @@ docker-compose --version
 
 使用docker-compose
 
-第一步、新建docker-compose.yml：
+**第一步、新建docker-compose.yml：**
 
 ```bash
 vi docker-compose.yml
@@ -202,7 +210,7 @@ vi docker-compose.yml
 
 
 
-第二步、写入服务配置：
+**第二步、写入服务配置：**
 
 ```bash
 version: '3'
@@ -223,7 +231,7 @@ services:
 
 
 
-第三步、启动docker-compose：
+**第三步、启动docker-compose：**
 
 ```bash
 docker-compose up
@@ -243,7 +251,7 @@ docker仓库，用于拉取镜像，类似npm
 
 
 
-登录：
+**登录：**
 
 ```bash
 docker login
@@ -251,7 +259,7 @@ docker login
 
 
 
-查看docker镜像：
+**查看docker镜像：**
 
 ```bash
 docker image ls
@@ -259,7 +267,7 @@ docker image ls
 
 
 
-提交镜像：
+**提交镜像：**
 
 ```bash
 docker commit 容器id 账号名/镜像名:版本号
@@ -267,7 +275,7 @@ docker commit 容器id 账号名/镜像名:版本号
 
 
 
-推送镜像到dockerhub：
+**推送镜像到dockerhub：**
 
 ```bash
 docker push 账号名/镜像名:版本号
@@ -275,7 +283,7 @@ docker push 账号名/镜像名:版本号
 
 
 
-从dockerhub拉取镜像：
+**从dockerhub拉取镜像：**
 
 ```bash
 docker pull 账号名/镜像名
@@ -283,7 +291,7 @@ docker pull 账号名/镜像名
 
 
 
-运行镜像：
+**运行镜像：**
 
 ```bash
 docker run 账号名/镜像名
@@ -315,7 +323,7 @@ docker run 账号名/镜像名
 
 ## 打包并发布镜像
 
-第一步、在对应项目的根目录新建Dockerfile和.dockerignore文件。
+**第一步、在对应项目的根目录新建Dockerfile和.dockerignore文件。**
 
 [参考](https://cn.vuejs.org/v2/cookbook/dockerize-vuejs-app.html)
 
@@ -418,13 +426,13 @@ pids
 
 
 
-第二步、将前后端项目拷贝到虚拟机家目录下
+**第二步、将前后端项目拷贝到虚拟机家目录下。**
 
 ![image-20210422154420639](docker.assets/image-20210422154420639.png)
 
 
 
-第三步、在虚拟机中切换到项目根目录下，执行打包镜像命令：
+**第三步、在虚拟机中切换到项目根目录下，执行打包镜像命令：**
 
 ```bash
 docker build -t web:1.0 .
@@ -434,7 +442,7 @@ docker build -t web:1.0 .
 
 + -t：设置标签名
 
-删除镜像：
+**删除镜像：**
 
 ```bash
 docker rmi 镜像id
@@ -444,7 +452,7 @@ docker rmi 镜像id
 
 
 
-第四步、运行镜像，即可启动项目服务。使用ip+端口11000即可在浏览器访问页面。
+**第四步、运行镜像，即可启动项目服务。使用ip+端口11000即可在浏览器访问页面。**
 
 ```bash
 docker run -itd --name web -p 11000:80 web:1.0
@@ -452,7 +460,7 @@ docker run -itd --name web -p 11000:80 web:1.0
 
 
 
-第五步、发布镜像
+**第五步、发布镜像。**
 
 首先登录docker账号（账号：edwardchen1993，密码：1234567890），如果未注册账号，请先到 [dockerhub](https://hub.docker.com/) 注册账号：
 
@@ -460,7 +468,7 @@ docker run -itd --name web -p 11000:80 web:1.0
 docker login
 ```
 
-发布：
+**发布：**
 
 ```bash
 docker push 账号名/镜像名:标签名

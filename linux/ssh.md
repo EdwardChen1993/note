@@ -21,7 +21,7 @@ ssh 用户名@服务器地址
 
 ## 密钥登录
 
-第一步、服务器上制作密钥对：
+**第一步、服务器上制作密钥对：**
 
 ```bash
 ssh-keygen
@@ -33,7 +33,7 @@ ssh-keygen
 
 
 
-第二步、服务器上authorized_keys添加新的公钥：
+**第二步、服务器上authorized_keys添加新的公钥：**
 
 ```bash
 cd ~/.ssh
@@ -49,7 +49,7 @@ chmod 700 ~/.ssh
 
 
 
-第三步、服务器上设置 SSH，打开密钥登录功能：
+**第三步、服务器上设置 SSH，打开密钥登录功能：**
 
 ```bash
 vi /etc/ssh/sshd_config
@@ -65,7 +65,7 @@ PermitRootLogin yes
 
 
 
-第四步、重启 SSH 服务：
+**第四步、重启 SSH 服务：**
 
 ```bash
 service sshd restart
@@ -73,7 +73,7 @@ service sshd restart
 
 
 
-第五步、服务器上复制私钥内容：
+**第五步、服务器上复制私钥内容：**
 
 ```bash
 cat ~/.ssh/id_rsa
@@ -81,7 +81,7 @@ cat ~/.ssh/id_rsa
 
 
 
-第六步、客户机上在“~/.ssh”上新建一个私钥文件，将第五步的内容粘贴到里面：
+**第六步、客户机上在“~/.ssh”上新建一个私钥文件，将第五步的内容粘贴到里面：**
 
 ```bash
 cd ~/.ssh
@@ -96,7 +96,7 @@ chmod 600 my_id_rsa
 
 
 
-第七步、手动指定私钥文件登录：
+**第七步、手动指定私钥文件登录：**
 
 ```ruby
 ssh -i ~/.ssh/my_id_rsa 用户名@服务器地址

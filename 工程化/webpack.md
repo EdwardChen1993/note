@@ -6,7 +6,7 @@
 
 ## plugins
 
-webpack **插件**[`apply`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/apply) 属性的 JavaScript 对象。`apply` 属性会被 webpack compiler 调用，并且 compiler 对象可在**整个**编译生命周期访问。
+plugins 是一个具有 apply 属性的 JavaScript 对象。apply 属性会被 webpack compiler 调用，并且 compiler 对象可在整个编译生命周期访问。
 
 **ConsoleLogOnBuildWebpackPlugin.js**
 
@@ -28,11 +28,11 @@ compiler hook 的 tap 方法的第一个参数，应该是驼峰式命名的插�
 
 ## loader和plugins区别
 
-loader：
+**loader：**
 
 让webpack能够处理非js文件(如css、图片、字体)，将其转换成webpack能处理的有效文件，单纯的文件转换过程。例如：css-loader、style-loader、postcss-loader、sass-loader。
 
-plugins：
+**plugins：**
 
 赋予webpack可以无限扩展的能力，可以做更加复杂类型的任务。包括打包压缩、生成html文件、重新定义环境变量等。例如：uglify-webpack-plugin、clean-webpack-plugin、babel-polyfill，DefinePlugin。
 
@@ -84,7 +84,7 @@ webpack --mode=production
 
 ### 方法二、使用node。
 
-命令行输入：
+**命令行输入：**
 
 ```bash
 node --inspect-brk ./node_modules/.bin/webpack --inline --progress
@@ -92,7 +92,7 @@ node --inspect-brk ./node_modules/.bin/webpack --inline --progress
 
 
 
-在chrome浏览器地址输入：
+**在chrome浏览器地址输入：**
 
 ```bash
 chrome://inspect/#devices
