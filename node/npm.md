@@ -182,3 +182,26 @@ meta——>元数据，对版本号做简要描述
 
 
 
+## npm-run-all
+
+并行或顺序运行多个npm脚本的CLI工具
+
+
+
+### 安装
+
+```bash
+npm install npm-run-all --save-dev
+```
+
+
+
+### 用法
+
+```bash
+# 串行执行
+npm-run-all -s 脚本1 脚本2 脚本3 
+# 并行执行
+npm-run-all -p 脚本1 脚本2 脚本3 
+```
+
