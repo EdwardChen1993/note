@@ -4,7 +4,9 @@
 
 ## 安装
 
-[官方文档](https://docs.mongodb.com/manual/administration/install-community/)
+安装包方式：[官方文档](https://docs.mongodb.com/manual/administration/install-community/)
+
+docker方式：[官方文档](https://hub.docker.com/_/mongo)
 
 安装成功后，使用命令验证是否安装成功：
 
@@ -153,3 +155,126 @@ const deleteMethods = async () => {
 }
 ```
 
+
+
+### Schemas
+
+#### 实例方法（method）
+
+documents 是 Models 的实例。 Document 有很多自带的实例方法， 当然也可以自定义我们自己的方法。
+
+```js
+// define a schema
+ var animalSchema = new Schema({ name: String, type: String });
+
+// assign a function to the "methods" object of our animalSchema
+animalSchema.methods.findSimilarTypes = function(cb) {
+  return this.model('Animal').find({ type: this.type }, cb);
+};
+```
+
+现在所有 animal 实例都有 findSimilarTypes 方法：
+
+```js
+var Animal = mongoose.model('Animal', animalSchema);
+var dog = new Animal({ type: 'dog' });
+
+dog.findSimilarTypes(function(err, dogs) {
+  console.log(dogs); // woof
+});
+```
+
+- 重写 mongoose 的默认方法会造成无法预料的结果，相关链接。
+- 不要在自定义方法中使用 ES6 箭头函数，会造成 this 指向错误。
+
+
+
+#### 静态方法（static）
+
+添加 Model 的静态方法也十分简单，继续用 animalSchema 举例：
+
+```js
+// assign a function to the "statics" object of our animalSchema
+animalSchema.statics.findByName = function(name, cb) {
+  return this.find({ name: new RegExp(name, 'i') }, cb);
+};
+
+var Animal = mongoose.model('Animal', animalSchema);
+  Animal.findByName('fido', function(err, animals) {
+  console.log(animals);
+});
+```
+
++ 同样不要在静态方法中使用 ES6 箭头函数。
+
+
+
+### Middleware
+
+中间件 (pre 和 post 钩子) 是在异步函数执行时函数传入的控制函数。
+
+#### Pre
+
+##### 串行
+
+串行中间件一个接一个地执行。具体来说， 上一个中间件调用 `next` 函数的时候，下一个执行。
+
+```js
+var schema = new Schema(..);
+schema.pre('save', function(next) {
+  // do stuff
+  next();
+});
+```
+
+使用Pre，可以在保存数据的时候，设置创建时间：
+
+```js
+var schema = new Schema(..);
+schema.pre('save', function(next) {
+  this.created = moment().format('YYYY-MM-DD HH:mm:ss');
+  next();
+});
+```
+
+
+
+### Populate
+
+MongoDB是文档型数据库，所以它没有关系型数据库joins特性。但是mongoose也有自己的方法来解决两个表之间的关联问题，Mongoose就是通过populate来解决这个问题的。
+
+[文档参考](https://segmentfault.com/a/1190000021151338)
+
+
+
+## Model
+
+**Model.prototype.save()**
+
+新增或更新文档。
+
+- 要 save 的文档不包含 _id 字段，则插入新文档，类似于 insert()。
+- 要 save 的文档包含 _id 字段，则更新文档，相当于 update(filter,update,{upsert: true})
+- 要 save 的文档包含 id 字段（必须是 ObjectId 形式），但 _id 的值在集合中不存在，则插入新文档；若 _id 的值在集合中存在，id 字段使用文档中的值，不生成新的。
+
+
+
+**Model.countDocuments()**
+
+统计与数据库集合中的filter所匹配的文档数。
+
+**参数：**
+
+- filter <Object>
+- [callback] <Function>
+
+
+
+### 条件操作符
+
+- $eq：等于（=）
+- $gt：大于（>）
+- $lt：小于（<）
+- $gte：大于等于（>=）
+- $lte：小于等于（<=）
+- $elemMatch：匹配数组字段中的某个值满足 $elemMatch 中指定的所有条件

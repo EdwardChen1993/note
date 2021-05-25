@@ -83,7 +83,7 @@ pointer-events: none;
 
 
 
-## :nth-child 和 :nth-of-type 区别
+## :nth-child和:nth-of-type 区别
 
 :nth-child和:nth-of-type都是CSS3中的伪类选择器，其作用近似却又不完全一样。
 
@@ -145,3 +145,58 @@ p:nth-of-type(2) { color: red; }
 对于`p:nth-child(2)`表示**这个元素要是`p`标签，且是第二个子元素**，是两个必须满足的条件。
 
 而`p:nth-of-type(2)`表示**父标签下的第二个`p`元素**。
+
+
+
+## :root
+
+:root 这个 CSS 伪类匹配文档树的根元素。对于 HTML 来说，:root 表示<HTML>元素，除了优先级更高之外，与 html 选择器相同。
+
+在声明全局 CSS 变量时 :root 会很有用：
+
+```css
+:root {
+  --main-color: hotpink;
+  --pane-padding: 5px 42px;
+}
+
+div {
+  background-color: var(--main-color);
+  color: var(--pane-padding);
+}
+```
+
+
+
+## line-height继承
+
+| 设置方式 | line-height | 父元素（假设font-size为16px）line-height | 子元素（假设font-size为32px）line-height |
+| -------- | ----------- | ---------------------------------------- | ---------------------------------------- |
+| inherit  | inherit     | 父元素的父元素line-height值              | 父元素的line-height值                    |
+| length   | 20px        | 20px                                     | 20px                                     |
+| %        | 120%        | 16px*120%=19.2px                         | 继承父元素计算后的line-height值19.2px    |
+| em       | 1.2em       | 16px*1.2em=19.2px                        | 继承父元素计算后的line-height值19.2px    |
+| number   | 1.2         | 16px*1.2=19.2px                          | 32px*1.2=38.4px                          |
+
+**总结：**
+
+- **当line-height的属性值有单位时（如px、%、em），子元素继承了父元素计算得出的行高。**
+- **当line-height的属性值无单位时，父元素和子元素会分别计算各自的行高（推荐使用）。**
+
+
+
+## 父元素选择器
+
+例：为 p 的父元素 li 设置一个边框：
+
+```css
+!li > p { border:1px solid #CCC; }
+```
+
+或者：
+
+```css
+li:has( > p){ border:1px solid #CCC; }
+```
+
+**注意：以上皆为提案，均未在浏览器中实现。**
