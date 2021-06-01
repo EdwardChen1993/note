@@ -488,7 +488,7 @@ shutdown -h 10
 **使用vim编辑器编辑文件：**
 
 ```bash
-vi 文件名
+vi/vim 文件名
 ```
 
 [参考链接](https://www.runoob.com/linux/linux-vim.html)
