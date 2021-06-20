@@ -187,7 +187,7 @@ div {
 
 ## 父元素选择器
 
-例：为 p 的父元素 li 设置一个边框：
+例：为子元素 p 的父元素 li 设置一个边框：
 
 ```css
 !li > p { border:1px solid #CCC; }
@@ -200,3 +200,49 @@ li:has( > p){ border:1px solid #CCC; }
 ```
 
 **注意：以上皆为提案，均未在浏览器中实现。**
+
+
+
+## currentColor
+
+currentColor 关键字代表原始的 color 属性的计算值。它允许让继承自属性或子元素的属性颜色属性以默认值不再继承。
+
+currentColor是CSS3中的变量，它表示“当前的标签所继承的文字颜色”。“当前颜色” 指本体color ，如果没有设置color就找父元素，一级一级找,一直到根元素位置。
+
+示例：
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      .father {
+        width: 200px;
+        height: 200px;
+        color: yellow;
+        border: 1px solid red;
+      }
+
+      .son {
+        width: 100px;
+        height: 100px;
+        color: blue;
+        border: 1px solid currentColor;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="father">
+      <div class="son"></div>
+    </div>
+  </body>
+</html>
+```
+
+当子元素设置了color属性为blue时，子元素的border颜色为blue。如果子元素没有设置color属性，子元素的border颜色为父元素的color属性的yellow。
+

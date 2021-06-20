@@ -234,7 +234,35 @@ h3 {
   font-weight: bold;
   color: #ff0000;
   padding: 4px;
-  margin-top: 10px; }
+  margin-top: 10px; 
+}
+```
+
+
+
+### 向混合样式中导入内容
+
+在引用混合样式的时候，可以先将一段代码导入到混合指令中，然后再输出混合样式，额外导入的部分将出现在 @content 标志的地方：
+
+```scss
+@mixin apply-to-ie6-only {
+  * html {
+    @content;
+  }
+}
+@include apply-to-ie6-only {
+  #logo {
+    background-image: url(/logo.gif);
+  }
+}
+```
+
+编译为
+
+```css
+* html #logo {
+  background-image: url(/logo.gif);
+}
 ```
 
 
