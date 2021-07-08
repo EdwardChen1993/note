@@ -253,8 +253,8 @@ MongoDB是文档型数据库，所以它没有关系型数据库joins特性。�
 
 新增或更新文档。
 
-- 要 save 的文档不包含 _id 字段，则插入新文档，类似于 insert()。
-- 要 save 的文档包含 _id 字段，则更新文档，相当于 update(filter,update,{upsert: true})
+- 要 save 的文档不包含 _id 字段，则插入新文档，类似于` insert()`。
+- 要 save 的文档包含 _id 字段，则更新文档，相当于 `update(filter,update,{upsert: true})`
 - 要 save 的文档包含 id 字段（必须是 ObjectId 形式），但 _id 的值在集合中不存在，则插入新文档；若 _id 的值在集合中存在，id 字段使用文档中的值，不生成新的。
 
 

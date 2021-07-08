@@ -23,7 +23,7 @@ npm install -g generator-generator
 yo generator
 ```
 
-注意：脚手架名要以 generator- 为前缀，如：generator-edward-gulp。
+注意：脚手架名要以 `generator-` 为前缀，如：`generator-edward-gulp`。
 
 
 
@@ -33,11 +33,11 @@ yo generator
 
 
 
-**第一步、将想要脚手架生成的代码模板复制到/generators/app/templates下。**
+**第一步、将想要脚手架生成的代码模板复制到`/generators/app/templates`下。**
 
 
 
-**第二步、修改/generators/app/index.js，如下：**
+**第二步、修改`/generators/app/index.js`，如下：**
 
 ```js
 prompting() {
@@ -78,9 +78,9 @@ install() {
 
 
 
-**第三步、执行 npm link ，将该项目下的npm依赖包链接到全局。这个命令的作用就是在全局环境下，生成一个符号链接文件，该文件的名字就是package.json文件中指定的模块名。同时我们对此模块的修改会实时反馈在全局目录下。**
+**第三步、执行 `npm link` ，将该项目下的npm依赖包链接到全局。这个命令的作用就是在全局环境下，生成一个符号链接文件，该文件的名字就是`package.json`文件中指定的模块名。同时我们对此模块的修改会实时反馈在全局目录下。**
 
-这样运行  yo+脚手架名 时（**此时脚手架名不需要generator- 为前缀**），就可以找到这个脚手架名了，如：yo edward-gulp。
+这样运行  yo+脚手架名 时（**此时脚手架名不需要 `generator-` 为前缀**），就可以找到这个脚手架名了，如：`yo edward-gulp`。
 
 [参考](https://yeoman.io/authoring/)
 

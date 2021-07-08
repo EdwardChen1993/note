@@ -10,15 +10,15 @@ nodemailer 是一个简单易用的 Node.JS 邮件发送模块（通过 SMTP，s
 
 ## 第一步、修改qq邮箱设置
 
-登录qq邮箱，点击进入 设置-账户-POP3/IMAP/SMTP/Exchange/CardDAV/CalDAV服务，开启SMTP服务。发送短信到指定号码后，获取授权码。
+登录qq邮箱，点击进入 `设置-账户-POP3/IMAP/SMTP/Exchange/CardDAV/CalDAV` 服务，开启SMTP服务。发送短信到指定号码后，获取授权码。
 
 
 
 ## 第二步、编写发送邮件调用函数
 
-**注意：nodemailer.createTransport中的host修改成smtp.qq.email，然后使用第一步获得的授权码，填入到auth.pass中。**
+**注意：`nodemailer.createTransport` 中的 `host` 修改成 `smtp.qq.email` ，然后使用第一步获得的授权码，填入到 `auth.pass` 中。**
 
-修改transporter.sendMail中的参数，即可修改邮件的发送者、接收者、主题、正文等。
+修改 `transporter.sendMail` 中的参数，即可修改邮件的发送者、接收者、主题、正文等。
 
 代码示例：
 

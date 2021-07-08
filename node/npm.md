@@ -1,12 +1,12 @@
 [TOC]
 
-# NPM node包管理工具
+# npm
+
+node包管理工具
 
 
 
-## 发布一个新包
-
-
+## 发布包
 
 ### 第一步、进入要发布的项目根目录，初始化为npm包
 
@@ -16,7 +16,7 @@
 npm init
 ```
 
-这步完成之后会生成一个package.json文件，上面输入的这些信息可以在该文件中修改
+这步完成之后会生成一个 `package.json` 文件，上面输入的这些信息可以在该文件中修改
 
 
 
@@ -62,9 +62,7 @@ npm config set registry https://registry.npmjs.org
 
 
 
-## 更新一个已经发布的包
-
-
+## 更新包
 
 ### 第一步、修改包的版本
 
@@ -72,7 +70,7 @@ npm config set registry https://registry.npmjs.org
 npm version patch
 ```
 
-该命令在原来的版本上自动加1，实际上是将package.json文件中的version值修改了。
+该命令在原来的版本上自动加1，实际上是将 `package.json` 文件中的version值修改了。
 
 
 
@@ -140,7 +138,7 @@ ncu -g
 ncu -u
 ```
 
-注意：上述命令只是更新package.json文件的内容，并没有修改node_modules目录下的依赖包。所以需要执行以下命令更新node_modules目录下的依赖包：
+注意：上述命令只是更新 `package.json` 文件的内容，并没有修改 `node_modules` 目录下的依赖包。所以需要执行以下命令更新 `node_modules` 目录下的依赖包：
 
 ```bash
 rm -rf node_modules/
@@ -185,8 +183,6 @@ meta——>元数据，对版本号做简要描述
 ## npm-run-all
 
 并行或顺序运行多个npm脚本的CLI工具
-
-
 
 ### 安装
 

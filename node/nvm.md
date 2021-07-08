@@ -1,6 +1,8 @@
 [TOC]
 
-# NVM node版本管理工具
+# nvm 
+
+node版本管理工具
 
 
 
@@ -10,15 +12,13 @@ windows：
 
 [链接](https://github.com/coreybutler/nvm-windows/releasesd)
 
-macos：
+macOS：
 
 [链接](https://github.com/nvm-sh/nvm)
 
 
 
 ## 使用
-
-
 
 ### 安装多版本node
 
@@ -38,7 +38,7 @@ nvm ls
 
 ### 列出远程服务器上所有的可用版本
 
-macos：
+macOS：
 
 ```bash
 nvm ls-remote

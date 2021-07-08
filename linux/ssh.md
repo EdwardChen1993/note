@@ -27,13 +27,13 @@ ssh 用户名@服务器地址
 ssh-keygen
 ```
 
-公钥：id_rsa.pub
+公钥：`id_rsa.pub`
 
-私钥：id_rsa
+私钥：`id_rsa`
 
 
 
-**第二步、服务器上authorized_keys添加新的公钥：**
+**第二步、服务器上 `authorized_keys` 添加新的公钥：**
 
 ```bash
 cd ~/.ssh
@@ -81,7 +81,7 @@ cat ~/.ssh/id_rsa
 
 
 
-**第六步、客户机上在“~/.ssh”上新建一个私钥文件，将第五步的内容粘贴到里面：**
+**第六步、客户机上在 `~/.ssh` 上新建一个私钥文件，将第五步的内容粘贴到里面：**
 
 ```bash
 cd ~/.ssh
@@ -104,7 +104,7 @@ ssh -i ~/.ssh/my_id_rsa 用户名@服务器地址
 
 **备注：**
 
-如果不希望每次登录都需要指定私钥文件，可以在客户机上的“~/.ssh/config”中配置主机，config文件用于做多密钥管理：
+如果不希望每次登录都需要指定私钥文件，可以在客户机上的 `~/.ssh/config` 中配置主机，config文件用于做多密钥管理：
 
 ```bash
 vi ~/.ssh/config

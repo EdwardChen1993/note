@@ -24,7 +24,8 @@ p.#{$name} {
 
 ```css
 p.foo {
-  border-color: blue; }
+  border-color: blue;
+}
 ```
 
 
@@ -49,7 +50,8 @@ $new_content: "First time reference" !default;
 ```css
 #main {
   content: "First content";
-  new-content: "First time reference"; }
+  new-content: "First time reference";
+}
 ```
 
 变量是 null 空值时将视为未被 `!default` 赋值。
@@ -67,7 +69,8 @@ $content: "Non-null content" !default;
 
 ```css
 #main {
-  content: "Non-null content"; }
+  content: "Non-null content";
+}
 ```
 
 
@@ -88,7 +91,8 @@ p {
 
 ```css
 p {
-  border: 1px solid; }
+  border: 1px solid;
+}
 ```
 
 @if 声明后面可以跟多个 @else if 声明，或者一个 @else 声明。如果 @if 声明失败，Sass 将逐条执行 @else if 声明，如果全部失败，最后执行 @else 声明，例如：
@@ -112,7 +116,8 @@ p {
 
 ```css
 p {
-  color: green; }
+  color: green;
+}
 ```
 
 
@@ -131,11 +136,14 @@ p {
 
 ```css
 .item-1 {
-  width: 2em; }
+  width: 2em;
+}
 .item-2 {
-  width: 4em; }
+  width: 4em;
+}
 .item-3 {
-  width: 6em; }
+  width: 6em;
+}
 ```
 
 
@@ -158,13 +166,17 @@ p {
 
 ```css
 .puma-icon {
-  background-image: url('/images/puma.png'); }
+  background-image: url('/images/puma.png');
+}
 .sea-slug-icon {
-  background-image: url('/images/sea-slug.png'); }
+  background-image: url('/images/sea-slug.png');
+}
 .egret-icon {
-  background-image: url('/images/egret.png'); }
+  background-image: url('/images/egret.png');
+}
 .salamander-icon {
-  background-image: url('/images/salamander.png'); }
+  background-image: url('/images/salamander.png');
+}
 ```
 
 由于 **map** 被视为一对列表，因此也可以对它们进行多个赋值。例如:
@@ -181,11 +193,14 @@ p {
 
 ```css
 h1 {
-  font-size: 2em; }
+  font-size: 2em;
+}
 h2 {
-  font-size: 1.5em; }
+  font-size: 1.5em;
+}
 h3 {
-  font-size: 1.2em; }
+  font-size: 1.2em;
+}
 ```
 
 
@@ -279,14 +294,17 @@ $gutter-width: 10px;
   @return $n * $grid-width + ($n - 1) * $gutter-width;
 }
 
-#sidebar { width: grid-width(5); }
+#sidebar {
+  width: grid-width(5);
+}
 ```
 
 编译为
 
 ```css
 #sidebar {
-  width: 240px; }
+  width: 240px;
+}
 ```
 
 
@@ -313,7 +331,7 @@ $gutter-width: 10px;
 }
 ```
 
-麻烦的是，这样做必须时刻记住使用 .seriousError 时需要参考 .error 的样式，带来了很多不变：智能比如加重维护负担，导致 bug，或者给 HTML 添加无语意的样式。使用 @extend 可以避免上述情况，告诉 Sass 将一个选择器下的所有样式继承给另一个选择器。
+麻烦的是，这样做必须时刻记住使用 .seriousError 时需要参考 .error 的样式，带来了很多不便：比如加重维护负担，导致 bug，或者给 HTML 添加无语意的样式。使用 @extend 可以避免上述情况，告诉 Sass 将一个选择器下的所有样式继承给另一个选择器。
 
 ```scss
 error {
@@ -339,7 +357,7 @@ error {
 }
 ```
 
-上面代码的意思是将 .error 下的所有样式继承给 .seriousError，border-width: 3px; 是单独给 .seriousError 设定特殊样式，这样，使用 .seriousError 的地方可以不再使用 .error。
+上面代码的意思是将 .error 下的所有样式继承给 `.seriousError { border-width: 3px; }`; 是单独给 .seriousError 设定特殊样式，这样，使用 .seriousError 的地方可以不再使用 .error。
 
 
 

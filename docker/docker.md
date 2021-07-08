@@ -37,10 +37,11 @@ docker version
 **启动docker：**
 
 ```bash
- systemctl start docker
+ systemctl enable docker //设置自启动docker
+ systemctl start docker // 启动docker
 ```
 
-**注意：虚拟机每次关机后重启都需要重新启动docker。**
+**注意：虚拟机使用start启动docker，每次关机后重启都需要重新启动docker，如果希望虚拟机每次启动时自启动docker，请使用enable。**
 
 
 
@@ -56,7 +57,7 @@ docker run hello-world
 
 **docker使用中国区镜像加速**
 
-可以令pull拉取的时候优先使用中国区镜像加速：
+可以令 `docker pull` 拉取的时候优先使用中国区镜像加速：
 
 ```bash
 vi /etc/docker/daemon.json
@@ -98,7 +99,7 @@ docker ps
 docker run 容器名
 ```
 
-docker run相当于执行了两步操作：将镜像放入容器中（docker create）,然后将容器启动，使之变成运行时容器（docker start）。
+`docker run`相当于执行了两步操作：将镜像放入容器中（`docker create`）,然后将容器启动，使之变成运行时容器（`docker start`）。
 
 参数：
 - -d：在后台运行容器，并打印容器id。
@@ -202,7 +203,7 @@ docker-compose --version
 
 使用docker-compose
 
-**第一步、新建docker-compose.yml：**
+**第一步、新建 `docker-compose.yml`：**
 
 ```bash
 vi docker-compose.yml
@@ -323,11 +324,11 @@ docker run 账号名/镜像名
 
 ## 打包并发布镜像
 
-**第一步、在对应项目的根目录新建Dockerfile和.dockerignore文件。**
+**第一步、在对应项目的根目录新建 `Dockerfile` 和 `.dockerignore` 文件。**
 
 [参考](https://cn.vuejs.org/v2/cookbook/dockerize-vuejs-app.html)
 
-前端的Dockerfile：
+前端的 `Dockerfile`：
 
 ```bash
 # build stage
@@ -358,7 +359,7 @@ EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
 ```
 
-后端的Dockerfile：
+后端的 `Dockerfile`：
 
 ```bash
 # build stage
@@ -385,7 +386,7 @@ CMD ["node", "dist/server.bundle.js"]
 
 
 
-.dockerignore：
+`.dockerignore`：
 
 ```bash
 # Dependency directory
@@ -474,7 +475,7 @@ docker login
 docker push 账号名/镜像名:标签名
 ```
 
-发布成功后，后续可以使用docker pull拉取镜像，然后docker run运行镜像。
+发布成功后，后续可以使用 `docker pull` 拉取镜像，然后 `docker run` 运行镜像。
 
 
 
