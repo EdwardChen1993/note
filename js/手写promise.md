@@ -30,7 +30,7 @@ class MyPromise {
   // 失败回调
   failCallback = [];
 
-  // 使用箭头函数，确保内部 this 指向当前 promise 实例而不是 window / undefined
+  // 使用箭头函数，确保内部 this 指向当前 promise 实例而不是 window/undefined
   resolve = (value) => {
     // 如果状态不是等待，阻止程序向下执行
     if (this.status !== PENDING) return;
