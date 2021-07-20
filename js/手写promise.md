@@ -8,7 +8,7 @@ const PENDING = "pending"; // 等待
 const FULFILLED = "fulfilled"; // 成功
 const REJECTED = "rejected"; // 失败
 
-/Promise 类
+// Promise 类
 class MyPromise {
   constructor(executor) {
     try {
