@@ -1,6 +1,10 @@
+
+
 [TOC]
 
-# Array.prototype.sort()
+# api
+
+## Array.prototype.sort()
 
 **sort()** 方法用原地算法对数组的元素进行排序，并返回数组。默认排序顺序是在将元素转换为字符串，然后比较它们的UTF-16代码单元值序列时构建的。[参考文档](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Array/sort)
 
@@ -25,3 +29,52 @@
 - 如果 **compareFunction(a, b)** 大于 0 ， b 会被排列到 a 之前。
 - **compareFunction(a, b)** 必须总是对相同的输入返回相同的比较结果，否则排序的结果将是不确定的。
 
+
+
+## Array.from 和[...]的区别
+
+> Array.from(arr) 和[...arr] 都可以将类数组arr转换成数组
+
+- 什么叫类数组
+
+  - 有数字索引
+  - 有长度length
+  - 是个对象
+  - 能被迭代
+
+- 如果arr只有索引和长度，并且是对象，所以可以被Array.from转换成数组的，但是[...arr]方法，就必须可以被迭代
+
+  ```js
+  let obj = {'0': 1,'1': 2,'2': 3,length: 3}
+  let arr = Array.from(obj)
+  console.log(arr)
+  let arr1= [...obj]
+  console.log(arr1)
+  ```
+
+- 上面的obj 因为不能被迭代 所以在进行[...obj]转换的时候就会报错`object is not iterable`,所以我们如果需要在obj上进行...运算，还需要在上面增加一个属性[Symbol.iterator]
+
+```js
+let obj = {
+    '0': 1,
+    '1': 2,
+    '2': 3,
+    length: 4,
+    [Symbol.iterator]: function(){
+        let index = 0
+        let next = () => {
+            return {
+                value: this[index],
+                done: this.length == ++ index
+            }
+        }
+        return {
+            next
+        }
+    }
+}
+let arr = Array.from(obj)
+console.log(arr)
+let arr1= [...obj]
+console.log(arr1)
+```

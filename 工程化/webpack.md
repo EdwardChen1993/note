@@ -94,8 +94,6 @@ node --inspect-brk ./node_modules/.bin/webpack --inline --progress
 chrome://inspect/#devices
 ```
 
-
-
 点击target列表中的inspect，即可进入调试界面。
 
 

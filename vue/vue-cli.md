@@ -16,3 +16,12 @@ vue add eslint
 
 [文档参考](https://cli.vuejs.org/zh/guide/plugins-and-presets.html#%E6%8F%92%E4%BB%B6)
 
+
+
+## 在当前目录下初始化vue项目
+
+```bash
+vue create .
+# Generate project in current directory? (Y/n) y
+```
+
