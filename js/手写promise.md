@@ -8,7 +8,7 @@ const PENDING = "pending"; // 等待
 const FULFILLED = "fulfilled"; // 成功
 const REJECTED = "rejected"; // 失败
 
-/Promise 类
+// Promise 类
 class MyPromise {
   constructor(executor) {
     try {
@@ -30,7 +30,7 @@ class MyPromise {
   // 失败回调
   failCallback = [];
 
-  // 使用箭头函数，确保内部 this 指向当前 promise 实例而不是 window / undefined
+  // 使用箭头函数，确保内部 this 指向当前 promise 实例而不是 window/undefined
   resolve = (value) => {
     // 如果状态不是等待，阻止程序向下执行
     if (this.status !== PENDING) return;
@@ -174,6 +174,20 @@ class MyPromise {
           );
         } else {
           addData(i, current);
+        }
+      }
+    });
+  }
+
+  static race(array) {
+    return new MyPromise((resolve, reject) => {
+      // 只要有一个成功或者失败就执行 resolve
+      for (let i = 0; i < array.length; i++) {
+        let current = array[i];
+        if (current instanceof MyPromise) {
+          current.then(resolve, reject);
+        } else {
+          resolve(current);
         }
       }
     });
