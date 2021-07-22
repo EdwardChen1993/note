@@ -199,6 +199,11 @@ class MyPromise {
     // 如果是普通值，包装成立即执行 resolve 的 promise 对象
     return new MyPromise((resolve) => resolve(value));
   }
+
+  static reject(reason) {
+    // 始终返回一个新的 Promise 对象，且状态为失败。
+    return new MyPromise((resolve, reject) => reject(reason));
+  }
 }
 
 /*  判断 value 的值是普通值还是 promise 对象

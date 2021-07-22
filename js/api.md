@@ -2,7 +2,7 @@
 
 [TOC]
 
-# api
+# API
 
 ## Array.prototype.sort()
 
