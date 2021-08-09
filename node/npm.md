@@ -22,6 +22,8 @@ node包管理工具
 
 需要设置 `--production` 标志（`npm install --production`），以避免安装这些开发依赖项。
 
+
+
 ### peerDependencies
 
 假设我们当前的项目是MyProject，项目中有一些依赖，比方其中有一个依赖包**PackageA**，该包的**package.json**文件指定了对**PackageB**的依赖：
@@ -260,8 +262,6 @@ npm install
 
 
 
-
-
 ## 语义化版本
 
 ### 示例
@@ -314,3 +314,113 @@ npm-run-all -s 脚本1 脚本2 脚本3
 npm-run-all -p 脚本1 脚本2 脚本3 
 ```
 
+
+
+## npm 查看版本以及更新
+
+```bash
+# npm查看当前版本
+npm -v
+# npm查看所有版本
+npm view npm versions
+# npm更新到最新版
+npm install -g npm
+```
+
+
+
+## npm link
+
+npm link用来在本地项目和本地npm模块之间建立连接，可以在本地进行模块测试
+
+具体用法：
+
+**1. 项目和模块在同一个目录下，可以使用相对路径**
+
+```bash
+npm link ../module
+```
+
+**2. 项目和模块不在同一个目录下**
+
+cd到模块目录，`npm link`，进行全局link
+
+cd到项目目录，`npm link 模块名(package.json中的name)`
+
+**3. 解除link**
+
+解除模块全局link，模块目录下，`npm unlink 模块名`
+
+解除项目和模块link，项目目录下，`npm unlink 模块名`
+
+
+
+## 执行顺序
+
+如果 npm 脚本里面需要执行多个任务，那么需要明确它们的执行顺序。
+
+如果是并行执行（即同时的平行执行），可以使用`&`符号。
+
+```bash
+$ npm run script1.js & npm run script2.js
+```
+
+如果是继发执行（即只有前一个任务成功，才执行下一个任务），可以使用`&&`符号。
+
+```bash
+$ npm run script1.js && npm run script2.js
+```
+
+
+
+## 钩子
+
+npm 脚本有`pre`和`post`两个钩子。举例来说，`build`脚本命令的钩子就是`prebuild`和`postbuild`。
+
+```bash
+"prebuild": "echo I run before the build script",
+"build": "cross-env NODE_ENV=production webpack",
+"postbuild": "echo I run after the build script"
+```
+
+用户执行`npm run build`的时候，会自动按照下面的顺序执行。
+
+```bash
+npm run prebuild && npm run build && npm run postbuild
+```
+
+因此，可以在这两个钩子里面，完成一些准备工作和清理工作。下面是一个例子。
+
+```json
+{
+  "scripts":{
+  	"clean": "rimraf ./dist && mkdir dist",
+		"prebuild": "npm run clean",
+		"build": "cross-env NODE_ENV=production webpack"	
+  }
+}
+```
+
+
+
+## npm or yarn
+
+**包管理工具**
+
+`yarn.lock / package-lock.json` 都可以锁定版本号，确保别的开发者在别的机器上安装的模块版本与你的本地安装的模块版本一致。
+
+**yarn / npx**
+
+yarn 可以自动找到 `node_modules/.bin` 下的可执行文件，npx 也可以。
+
+npx 可以直接执行 远端（线上）模块，下载到一个临时目录，使用以后再删除，一次性使用。
+
+
+
+## 全局安装 or 本地安装
+
+全局安装模块：只有本地经常用到，而且与某一个特定项目无关的工具或者模块
+
+脚手架类型的工具，建议使用 npx / yarn init，一次性使用，例如：`yarn init react-app react-demo`（执行该命令会自动找到`creat-react-app`脚手架创建项目）
+
+其他所有的模块都应该安装到项目本地。也就是在 `package.json` 声明这个依赖，便于后期管理
