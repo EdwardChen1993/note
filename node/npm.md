@@ -30,7 +30,7 @@ node包管理工具
 
 ```json
 {
-    "dependencies": {
+   "dependencies": {
         "PackageB": "1.0.0"
     }
 }
@@ -79,7 +79,7 @@ var packageB = require('PackageB')
 }
 ```
 
-那么，它会告诉npm：如果某个package把我列为依赖的话，那么那个package也必需应该有对**PackageB**的依赖。
+那么，它会告诉npm：如果某个project把我列为依赖的话，那么那个project也必需应该有对**PackageB**的依赖。
 
 也就是说，如果你`npm install PackageA`，你将会得到下面的如下的目录结构：
 
@@ -101,13 +101,13 @@ var packageB = require('PackageB')
 
 > **peerDependencies**的目的是提示宿主环境去安装满足插件**peerDependencies**所指定依赖的包，然后在插件`import`或者`require`所依赖的包的时候，永远都是引用宿主环境统一安装的npm包，最终解决插件与所依赖包不一致的问题。
 
-举个例子，就拿目前基于react的ui组件库``来说，因该ui组件库只是提供一套react组件库，它要求宿主环境需要安装指定的react版本。具体可以看它 [package.json](https://github.com/ant-design/ant-design/blob/master/package.json#L37) 中的配置：
+举个例子，就拿目前基于react的ui组件库来说，因该ui组件库只是提供一套react组件库，它要求宿主环境需要安装指定的react版本。具体可以看它 [package.json](https://github.com/ant-design/ant-design/blob/master/package.json#L37) 中的配置：
 
 ```json
-  "peerDependencies": {
-    "react": ">=16.0.0",
-    "react-dom": ">=16.0.0"
-  }
+"peerDependencies": {
+  "react": ">=16.0.0",
+  "react-dom": ">=16.0.0"
+}
 ```
 
 它要求宿主环境安装`react@>=16.0.0`和`react-dom@>=16.0.0`的版本，而在每个antd组件的定义文件顶部：
