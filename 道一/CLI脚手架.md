@@ -40,7 +40,7 @@ vue create [project-name]
 
 ## 实现思路
 
-1. 配置可执行命令 **commander **
+1. 配置可执行命令 **commander** 
 
    [官方文档](https://github.com/tj/commander.js/blob/master/Readme_zh-CN.md)
 
