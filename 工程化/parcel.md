@@ -1,6 +1,6 @@
 [TOC]
 
-# parcel
+# Parcel
 
 零配置的前端应用打包器
 

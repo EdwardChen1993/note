@@ -1,6 +1,6 @@
 [TOC]
 
-# mongodb
+# Mongodb
 
 ## 安装
 
@@ -14,21 +14,21 @@ docker方式：[官方文档](https://hub.docker.com/_/mongo)
 mongo -version
 ```
 
-![image-20210427144814804](mongodb.assets/image-20210427144814804.png)
+![image-20210427144814804](Mongodb.assets/image-20210427144814804.png)
 
 然后查看目录，先启动mongod，再启动mongo：
 
-![image-20210427144701290](mongodb.assets/image-20210427144701290.png)
+![image-20210427144701290](Mongodb.assets/image-20210427144701290.png)
 
-连接成功，mongodb默认端口是27017：
+连接成功，Mongodb默认端口是27017：
 
-![image-20210427164403409](mongodb.assets/image-20210427164403409.png)
+![image-20210427164403409](Mongodb.assets/image-20210427164403409.png)
 
 mongod 命令是启用数据库服务，即搭建并开启服务器，可以通过端口被访问（27017）
 
 mongo 命令是连接数据库服务，即连接服务器，可以通过端口进行访问（27017）
 
-注意：mongod 和 mongo 的区别，前者是启用MongoDB进程，后者是对MongoDB进行连接操作。
+注意：mongod 和 mongo 的区别，前者是启用Mongodb进程，后者是对Mongodb进行连接操作。
 
 
 
@@ -42,7 +42,7 @@ mongodump -h localhost -u root -p 密码 -d test -o /tmp/test
 
 参数：
 
-- -h：MongoDB 所在服务器地址
+- -h：Mongodb 所在服务器地址
 - -u：用户名
 - -p：密码
 - -d：需要备份的数据库，例如：test，不传-d则备份所有数据库。
@@ -64,7 +64,7 @@ mongorestore -h localhost -u root -p 密码 -d test --dir /tmp/test
 
 参数：
 
-- -h：MongoDB 所在服务器地址
+- -h：Mongodb 所在服务器地址
 - -u：用户名
 - -p：密码
 - -d：需要备份的数据库，例如：test，不传-d则备份所有数据库。
@@ -76,20 +76,20 @@ mongorestore -h localhost -u root -p 密码 -d test --dir /tmp/test
 
 [官方文档](http://www.mongoosejs.net/)
 
-Mongoose是一个对象文档模型（ODM）库，它对Node原生的MongoDB模块进行了进一步的优化封装，并提供了更多的功能。
+Mongoose是一个对象文档模型（ODM）库，它对Node原生的Mongodb模块进行了进一步的优化封装，并提供了更多的功能。
 
 数据库核心概念区别：
 
-| 分类 | Oralce/Mysql | MongoDB          | Mongoose                 |
+| 分类 | Oralce/Mysql | Mongodb          | Mongoose                 |
 | ---- | ------------ | ---------------- | ------------------------ |
-| 1    | 数据库实例   | MongoDB实例      | Mongoose                 |
+| 1    | 数据库实例   | Mongodb实例      | Mongoose                 |
 | 2    | 模式(schema) | 数据库(database) | mongoose                 |
 | 3    | 表(table)    | 集合(collection) | 模板(Schema)/模型(Model) |
 | 4    | 行(row)      | 文档(document)   | 实例(instance)           |
 | 5    | Primary key  | Object(_id)      | Object(_id)              |
 | 6    | 表自动Column | Field            | Field                    |
 
-Schema：Mongoose 的一切始于 Schema。每个 schema 都会映射到一个 MongoDB collection ，并定义这个collection里的文档的构成。
+Schema：Mongoose 的一切始于 Schema。每个 schema 都会映射到一个 Mongodb collection ，并定义这个collection里的文档的构成。
 
 Model：Models 是从 Schema 编译来的构造函数。 它们的实例就代表着可以从数据库保存和读取的 documents。 从数据库创建和读取 document 的所有操作都是通过 model 进行的。
 
@@ -241,7 +241,7 @@ schema.pre('save', function(next) {
 
 ### Populate
 
-MongoDB是文档型数据库，所以它没有关系型数据库joins特性。但是mongoose也有自己的方法来解决两个表之间的关联问题，Mongoose就是通过populate来解决这个问题的。
+Mongodb是文档型数据库，所以它没有关系型数据库joins特性。但是mongoose也有自己的方法来解决两个表之间的关联问题，Mongoose就是通过populate来解决这个问题的。
 
 [文档参考](https://segmentfault.com/a/1190000021151338)
 

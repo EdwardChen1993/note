@@ -331,7 +331,7 @@ npm install -g npm
 
 ## npm link
 
-npm link用来在本地项目和本地npm模块之间建立连接，可以在本地进行模块测试
+npm link 用来在本地项目和本地开发的 npm 模块之间建立**软连接**（相当于快捷方式），可以在本地进行模块测试，而不需要频繁发布模块到远程 npm 上。
 
 具体用法：
 
@@ -343,9 +343,9 @@ npm link ../module
 
 **2. 项目和模块不在同一个目录下**
 
-cd到模块目录，`npm link`，进行全局link
+cd 到模块目录，`npm link`，进行全局link
 
-cd到项目目录，`npm link 模块名(package.json中的name)`
+cd 到项目目录，`npm link 模块名`
 
 **3. 解除link**
 
@@ -359,13 +359,13 @@ cd到项目目录，`npm link 模块名(package.json中的name)`
 
 如果 npm 脚本里面需要执行多个任务，那么需要明确它们的执行顺序。
 
-如果是并行执行（即同时的平行执行），可以使用`&`符号。
+如果是并行执行（即同时的平行执行），可以使用 `&` 符号。
 
 ```bash
 $ npm run script1.js & npm run script2.js
 ```
 
-如果是继发执行（即只有前一个任务成功，才执行下一个任务），可以使用`&&`符号。
+如果是继发执行（即只有前一个任务成功，才执行下一个任务），可以使用 `&&` 符号。
 
 ```bash
 $ npm run script1.js && npm run script2.js
@@ -424,3 +424,24 @@ npx 可以直接执行 远端（线上）模块，下载到一个临时目录，
 脚手架类型的工具，建议使用 npx / yarn init，一次性使用，例如：`yarn init react-app react-demo`（执行该命令会自动找到`creat-react-app`脚手架创建项目）
 
 其他所有的模块都应该安装到项目本地。也就是在 `package.json` 声明这个依赖，便于后期管理
+
+
+
+## 查看当前npm用户
+
+```bash
+npm whoami
+edwardchen1993 //当前用户
+```
+
+如果显示以下提示表明还未登录 `npm whoami` 该命令只在登录态下使用，使用 `npm login` 进行登录或者使用`npm adduser`添加新用户
+
+```
+npm ERR! code ENEEDAUTH
+npm ERR! need auth This command requires you to be logged in.
+npm ERR! need auth You need to authorize this machine using `npm adduser`
+
+npm ERR! A complete log of this run can be found in:
+npm ERR!     C:\Users\admin\AppData\Roaming\npm-cache\_logs\2021-08-16T02_54_41_525Z-debug.log
+```
+

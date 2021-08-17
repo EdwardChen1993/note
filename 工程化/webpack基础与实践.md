@@ -1,6 +1,6 @@
 [TOC]
 
-# webpack基础与实践
+# Webpack基础与实践
 
 ## **ES Module 存在的问题**
 
@@ -438,7 +438,6 @@ module.exports = source => {  /
   const html = marked(source)
   return html    // 返回 html 字符串交给下一个 loader 处理
 }
-
 
 // webpack.config.js
  module: {
@@ -1012,7 +1011,7 @@ module.exports = [
 
   - 或者选用 `nosources-source-map`
 
-  - - 在源代码中可以找到源代码对应的位置，但是不会在开发者工具中暴露所有源代码
+  - - 出现错误报错时在控制台中可以找到源代码对应的位置，但是不会在开发者工具中暴露所有源代码
 
 - - 没有绝对的通用法则，理解不同模式的差异，适配不同的环境
 

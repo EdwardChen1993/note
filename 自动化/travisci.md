@@ -1,20 +1,20 @@
 [TOC]
 
-# travisci
+# Travisci
 
 ## 操作流程
 
 **第一步、进入[官网](https://travis-ci.com)，使用github账户注册并授权。**
 
-![image-20210421103818874](travisci.assets/image-20210421103818874.png)
+![image-20210421103818874](Travisci.assets/image-20210421103818874.png)
 
 
 
 **第二步、同步github账户数据和激活所有仓库，激活后点击列表中对应的仓库即可进入仓库详情。**
 
-![image-20210421103729687](travisci.assets/image-20210421103729687.png)
+![image-20210421103729687](Travisci.assets/image-20210421103729687.png)
 
-![image-20210421105714577](travisci.assets/image-20210421105714577.png)
+![image-20210421105714577](Travisci.assets/image-20210421105714577.png)
 
 
 
@@ -64,26 +64,26 @@ deploy:
 
 **第五步、在github中的settings创建personal access token，创建成功后复制生成的token。**
 
-![image-20210421104444723](travisci.assets/image-20210421104444723.png)
+![image-20210421104444723](Travisci.assets/image-20210421104444723.png)
 
-![image-20210421104526535](travisci.assets/image-20210421104526535.png)
+![image-20210421104526535](Travisci.assets/image-20210421104526535.png)
 
-![image-20210421104645193](travisci.assets/image-20210421104645193.png)
+![image-20210421104645193](Travisci.assets/image-20210421104645193.png)
 
 
 
 **第六步、在travisci的More options的Settings中，将第四步生成的token添加到环境变量。**
 
-![image-20210421104330962](travisci.assets/image-20210421104330962.png)
+![image-20210421104330962](Travisci.assets/image-20210421104330962.png)
 
-![image-20210421104824583](travisci.assets/image-20210421104824583.png)
+![image-20210421104824583](Travisci.assets/image-20210421104824583.png)
 
 
 
 **第七步、修改项目代码，然后提交并推送到github。稍等片刻就会自动触发travisci的构建任务，自动执行.travis.yml中定义的install、script和deploy任务进行构建部署。**
 
-![image-20210421110338427](travisci.assets/image-20210421110338427.png)
+![image-20210421110338427](Travisci.assets/image-20210421110338427.png)
 
-![image-20210421104309690](travisci.assets/image-20210421104309690.png)
+![image-20210421104309690](Travisci.assets/image-20210421104309690.png)
 
-![image-20210421105218833](travisci.assets/image-20210421105218833.png)
+![image-20210421105218833](Travisci.assets/image-20210421105218833.png)
