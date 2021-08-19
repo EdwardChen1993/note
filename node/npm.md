@@ -167,8 +167,6 @@ npm publish
 
 **注意：如果发布时报错：‘no_perms Private mode enable, only admin can publish this module:’，表示当前不是原始镜像，可能用的是其他镜像，如淘宝镜像。**
 
-
-
 要切换回原始的npm镜像，命令：
 
 ```bash
@@ -197,11 +195,9 @@ npm publish
 
 
 
-## 删除包
+## 撤销包
 
-
-
-### 删除指定版本
+### 撤销包指定版本
 
 ```bash
 npm unpublish 包名@版本号
@@ -209,7 +205,7 @@ npm unpublish 包名@版本号
 
 
 
-### 删除整个包
+### 撤销整个包
 
 ```bash
 npm unpublish 包名 --force

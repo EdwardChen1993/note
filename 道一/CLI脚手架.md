@@ -468,6 +468,7 @@ class Creator {
       name: "useTS",
       type: "confirm",
       message: "please confirm whether to use typescript",
+      default: false
     });
     return useTS;
   }
