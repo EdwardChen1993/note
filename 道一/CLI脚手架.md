@@ -38,22 +38,6 @@ vue create [project-name]
 
 
 
-## 实现思路
-
-1. 配置可执行命令 **commander** 
-
-   [官方文档](https://github.com/tj/commander.js/blob/master/Readme_zh-CN.md)
-
-2. 命令行交互功能 **inquirer**
-
-   [官方文档](https://www.npmjs.com/package/inquirer#documentation)
-
-3. 下载模板 **download-git-repo**
-
-   [官方文档](https://www.npmjs.com/package/download-git-repo)
-
-
-
 ## 前置知识
 
 ### npm link
@@ -108,6 +92,20 @@ cd 到项目目录，`npm link 模块名`
 同时，需要在`bin`字段指定的 js 脚本头部指定`#!/usr/bin/env node`，这是告诉系统，以下的脚本内容，需要使用 node 来执行（类似  shell脚本头部的 `#!/bin/bash` ）。
 
 
+
+## 实现思路
+
+1. 配置可执行命令 **commander** 
+
+   [官方文档](https://github.com/tj/commander.js/blob/master/Readme_zh-CN.md)
+
+2. 命令行交互功能 **inquirer**
+
+   [官方文档](https://www.npmjs.com/package/inquirer#documentation)
+
+3. 下载模板 **download-git-repo**
+
+   [官方文档](https://www.npmjs.com/package/download-git-repo)
 
 
 
@@ -423,7 +421,7 @@ const inquirer = require("inquirer");
 const { promisify } = require("util");
 const path = require("path");
 const downloadGitRepo = require("download-git-repo");
-const chalk = require('chalk')
+const chalk = require("chalk");
 const ora = require("ora");
 const loading = ora("fetching");
 const { fetchRepoList, fetchTagList } = require("./request");
@@ -468,7 +466,7 @@ class Creator {
       name: "useTS",
       type: "confirm",
       message: "please confirm whether to use typescript",
-      default: false
+      default: false,
     });
     return useTS;
   }
@@ -481,9 +479,8 @@ class Creator {
     // 使用 typescript ，下载路径使用分支名，否则使用标签名
     if (isUseTS) {
       const branch = `${repo}${tag.split(".")[0]}-template-with-typescript`;
-      requestUrl = `EdwardChen1993/${repo}#${branch}`;
-    } 
-    else {
+      requestUrl = `EdwardChen11993/${repo}#${branch}`;
+    } else {
       requestUrl = `EdwardChen1993/${repo}#${tag}`;
     }
     // 2.将资源下载到某个目录下
@@ -495,7 +492,8 @@ class Creator {
       );
       loading.succeed("download completed");
     } catch (error) {
-      loading.fail("download fail, please try again")
+      loading.fail("download fail, please try again");
+      return Promise.reject(error);
     }
     return this.target;
   }
@@ -512,14 +510,14 @@ class Creator {
     const isUseTS = await this.fetchIsUseTS();
 
     // 4.下载
-    const downloadUrl = await this.download(repo, tag, isUseTS);
+    await this.download(repo, tag, isUseTS);
 
-    // 5.处理下载完成后逻辑
-    console.log(`🎉  Successfully created project ${chalk.yellow(this.name)}`)
-    console.log('👉  Get started with the following commands:')
-    console.log(chalk.blue(`$ cd ${this.name}`))
-    console.log(chalk.blue('$ npm i'))
-    console.log(chalk.blue('$ npm run serve'))
+    // 5.处理下载完成后逻辑，提示用户接下来的操作
+    console.log(`🎉  Successfully created project ${chalk.yellow(this.name)}`);
+    console.log("👉  Get started with the following commands:");
+    console.log(chalk.blue(`$ cd ${this.name}`));
+    console.log(chalk.blue("$ npm i"));
+    console.log(chalk.blue("$ npm run serve"));
   }
 }
 
