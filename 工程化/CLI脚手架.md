@@ -116,7 +116,7 @@ cd 到项目目录，`npm link 模块名`
 在开始实现 CLI 脚手架之前，我们设想一下如何初始化项目的命令：
 
 ```bash
-do1 create <project-namne>
+do1 create <project-name>
 ```
 
 
@@ -183,7 +183,7 @@ npm install commander
 
 #### 使用
 
-bin/index.js：
+`bin/index.js`：
 
 首先指定版本号，这样就可以使用`do1 -V` 或者 `do1 --version` 输出版本号。
 
@@ -417,14 +417,16 @@ promisify(downloadGitRepo);
 `lib/Creator.js`
 
 ```js
+const childProcess = require("child_process");
 const inquirer = require("inquirer");
 const { promisify } = require("util");
 const path = require("path");
 const downloadGitRepo = require("download-git-repo");
+const figlet = promisify(require('figlet'))
 const chalk = require("chalk");
 const ora = require("ora");
-const loading = ora("fetching");
 const { fetchRepoList, fetchTagList } = require("./request");
+const pkg = require('../package.json')
 
 class Creator {
   constructor(projectName, targetDir) {
@@ -484,6 +486,7 @@ class Creator {
       requestUrl = `EdwardChen1993/${repo}#${tag}`;
     }
     // 2.将资源下载到某个目录下
+    const loading = ora("fetching");
     loading.start();
     try {
       await this.downloadGitRepo(
@@ -512,16 +515,128 @@ class Creator {
     // 4.下载
     await this.download(repo, tag, isUseTS);
 
-    // 5.处理下载完成后逻辑，提示用户接下来的操作
-    console.log(`🎉  Successfully created project ${chalk.yellow(this.name)}`);
-    console.log("👉  Get started with the following commands:");
-    console.log(chalk.blue(`$ cd ${this.name}`));
-    console.log(chalk.blue("$ npm i"));
-    console.log(chalk.blue("$ npm run serve"));
+    // 提示炫酷大文字
+    const figletText = await figlet(`${pkg.name} Welcome`)
+    console.log(figletText)
+
+    const loading = ora("installing dependences\n");
+    loading.start();
+    try {
+      // 5.自动安装依赖
+      childProcess.execSync("npm install", { cwd: `./${this.name}` }); // 使用子进程执行命令，cwd 设置子进程的当前工作目录
+      loading.succeed('install dependences completed')
+
+      // 6.提示用户接下来的操作
+      console.log(
+        `🎉  Successfully created project ${chalk.yellow(this.name)}`
+      );
+      console.log("👉  Get started with the following commands:");
+      console.log(chalk.blue(`$ cd ${this.name}`));
+      console.log(chalk.blue("$ npm run serve"));
+    } catch (error) {
+      loading.fail('install dependences fail, please try again')
+    }
   }
 }
 
 module.exports = Creator;
+```
+
+
+
+## 模板编译
+
+刚才说的是简单文件，那当然直接拷贝就好了，但是有的时候用户可以定制下载模板中的内容，拿`package.json`文件为例，用户可以根据提示给项目命名、设置描述等
+
+这里我在项目模板中增加了 `ask.js`
+
+```js
+module.exports = [
+    {
+      type: 'confirm',
+      name: 'private',
+      message: 'ths resgistery is private?',
+    },
+    // ...
+]
+```
+
+根据对应的询问生成最终的`package.json`
+
+下载的模板中使用了`ejs`模板：
+
+```json
+{
+  "name": "vue-template",
+  "version": "0.1.2",
+  "private": "<%=private%>",
+  "scripts": {
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build"
+  },
+  "dependencies": {
+    "vue": "^2.6.10"
+  },
+  "autor":"<%=author%>",
+  "description": "<%=description%>",
+  "devDependencies": {
+    "@vue/cli-service": "^3.11.0",
+    "vue-template-compiler": "^2.6.10"
+  },
+  "license": "<%=license%>"
+}
+```
+
+> 写到这里，大家应该想到了！核心原理就是将下载的模板文件，依次遍历根据用户填写的信息渲染模板，将渲染好的结果拷贝到执行命令的目录下
+
+安装需要用到的模块：
+
+```bash
+npm i metalsmith ejs consolidate
+```
+
+```js
+const MetalSmith = require('metalsmith'); // 遍历文件夹
+let { render } = require('consolidate').ejs;
+render = promisify(render); // 包装渲染方法
+
+// 没有ask文件说明不需要编译
+if (!fs.existsSync(path.join(target, 'ask.js'))) {
+  await ncp(target, path.join(path.resolve(), projectName));
+} else {
+  await new Promise((resovle, reject) => {
+    MetalSmith(__dirname)
+      .source(target) // 遍历下载的目录
+      .destination(path.join(path.resolve(), projectName)) // 输出渲染后的结果
+      .use(async (files, metal, done) => {
+        // 弹框询问用户
+        const result = await Inquirer.prompt(require(path.join(target, 'ask.js')));
+        const data = metal.metadata();
+        Object.assign(data, result); // 将询问的结果放到metadata中保证在下一个中间件中可以获取到
+        delete files['ask.js'];
+        done();
+      })
+      .use((files, metal, done) => {
+        Reflect.ownKeys(files).forEach(async (file) => {
+          let content = files[file].contents.toString(); // 获取文件中的内容
+          if (file.includes('.js') || file.includes('.json')) { // 如果是js或者json才有可能是模板
+            if (content.includes('<%')) { // 文件中用<% 我才需要编译
+              content = await render(content, metal.metadata()); // 用数据渲染模板
+              files[file].contents = Buffer.from(content); // 渲染好的结果替换即可
+            }
+          }
+        });
+        done();
+      })
+      .build((err) => { // 执行中间件
+        if (!err) {
+          resovle();
+        } else {
+          reject();
+        }
+      });
+  });
+}
 ```
 
 

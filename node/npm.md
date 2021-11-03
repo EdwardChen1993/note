@@ -441,3 +441,63 @@ npm ERR! A complete log of this run can be found in:
 npm ERR!     C:\Users\admin\AppData\Roaming\npm-cache\_logs\2021-08-16T02_54_41_525Z-debug.log
 ```
 
+
+
+## yarn workspace
+
+### 作用
+
+Workspace 能更好的统一管理有多个项目的仓库，既可在每个项目下使用独立的 `package.json` 管理依赖，又可便利的享受一条 yarn 命令安装或者升级所有依赖等。更重要的是可以使多个项目共享同一个 `node_modules` 目录，提升开发效率和降低磁盘空间占用。
+
+一句话总结就是可以大大简化对多个项目的统一管理。
+
+很多知名的开源项目也使用了 Yarn Workspace，如 vue、react、jest 等。
+
+
+
+### 使用
+
+
+yarn workspace并不需要安装什么其他的包，只需要简单的更改根目录下的 `package.json` 便可以工作。 首先我们需要确定workspace root，一般来说workspace root都会是repo的根目录
+
+根目录下的 `package.json`：
+
+```json
+{
+    // 当 private 为 true 时 workspace 才会被启用，同时指定根目录下的文件不给 npm 托管。
+    "private": true，
+  	// workspaces 指定工作区的目录，属性的值为一个字符串数组，每一项指代一个workspace路径，支持全局匹配。
+    "workspace": ["packages/*"]
+}
+```
+
+
+
+### 命令
+
+给工作区根目录安装开发依赖（`-W`：安装到工作区的根目录）：
+
+```bash
+yarn add jest -D -W
+```
+
+给指定工作区安装依赖（`workspace-a`：**工作区的包名，不是工作区的目录名而是 `package.json`中 `name` 字段的值。这样就不用切换到工作区对应的目录下执行安装命令，执行命令同理**）：
+
+```bash
+yarn workspace workspace-a add lodash@4
+```
+
+给所有的工作区安装依赖**（如果某个依赖被多个工作区使用，则会安装到根目录下的 `node_modules` 下，否则只会安装到单个使用到的工作区的 `node_modules` 下）**：
+
+```bash
+yarn install
+```
+
+给所有的工作区执行命令（`test`：`package.json` 文件中指定的 `scripts` 字段中的命令名）：
+
+```bash
+yarn workspace test
+```
+
+
+

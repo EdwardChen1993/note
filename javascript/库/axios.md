@@ -4,7 +4,7 @@
 
 ## 拦截器
 
-在请求或响应被 then 或 catch 处理前拦截它们。
+在请求或响应被 `then` 或 `catch` 处理前拦截它们。
 
 ```js
 // 添加请求拦截器
@@ -46,7 +46,7 @@ instance.interceptors.request.use(function () {/*...*/});
 
 **使用 cancel token 取消请求**
 
-可以使用 CancelToken.source 工厂方法创建 cancel token，像这样：
+可以使用 `CancelToken.source` 工厂方法创建 cancel token，像这样：
 
 ```js
 const CancelToken = axios.CancelToken;
@@ -72,7 +72,7 @@ axios.post('/user/12345', {
 source.cancel('Operation canceled by the user.');
 ```
 
-还可以通过传递一个 executor 函数到 CancelToken 的构造函数来创建 cancel token：
+还可以通过传递一个 `executor` 函数到 `CancelToken` 的构造函数来创建 cancel token：
 
 ```js
 const CancelToken = axios.CancelToken;
@@ -90,4 +90,14 @@ cancel();
 ```
 
 **注意: 可以使用同一个 cancel token 取消多个请求**
+
+
+
+## Content-Type
+
+axios 默认发送的是 `application/json` 格式的数据。
+
+1. 如果 data 是普通对象，则 `Content-Type` 是  `application/json` 。
+2. 如果 data 是 `qs.stringify(data)` 转换之后的数据：key1=value1&key2=value2，则 `Content-Type` 是  `application/x-www-form-urlencoded` 。
+3. 如果 data 是 `FormData` 对象，则 `Content-Type` 是  `multipart/form-data` 。
 

@@ -967,7 +967,7 @@ module.exports = [
 - 前缀含义：
 
 - - eval - 是否使用eval函数执行模块代码
-  - cheap - Source Map 是否包含行信息
+  - cheap - Source Map 是否只包含行信息，没有列信息
   - module - 是否能够得到Loader处理之前的源代码
 
 
@@ -1101,7 +1101,7 @@ module.hot.accept('./editor',() =>{   // 表示当editor这个js文件中的代�
 
 ```js
 module.hot.accept('./xxx.png',() =>{   
-    img.src = backgroung  // 将图片的地址修改成替换后的来实现热更新
+    img.src = background  // 将图片的地址修改成替换后的来实现热更新
     console.log('图片替换完成')
 })
 ```

@@ -377,9 +377,9 @@ module.exports = {
 ```js
 module.exports = {
  extends: [
- "stylelint-config-standard",
- "stylelint-config-sass-guidelines" // 安装sass的共享配置模块
-    ]
+ 	"stylelint-config-standard",
+ 	"stylelint-config-sass-guidelines" // 安装sass的共享配置模块
+ ]
 }
 ```
 
