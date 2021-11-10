@@ -8,7 +8,15 @@
 
 JavaScript 状态容器，提供可预测化的状态管理
 
-![image-20211101110344538](redux.assets/image-20211101110344538.png)
+```js
+const state = {
+  modalOpen: "yes",
+  btnClicked: "no",
+  btnActiveClass: "active",
+  page: 5,
+  size: 10,
+};
+```
 
 
 
@@ -18,7 +26,9 @@ JavaScript 状态容器，提供可预测化的状态管理
 
 [CDN](https://cdn.bootcss.com/redux/4.0.5/redux.min.js)
 
-![image-20211101110504043](redux.assets/image-20211101110504043.png)
+```html
+<script src="https://cdn.bootcss.com/redux/4.0.5/redux.min.js"></script>
+```
 
 
 
@@ -38,7 +48,20 @@ JavaScript 状态容器，提供可预测化的状态管理
 
 ### redux 核心 API
 
-![image-20211101110657846](redux.assets/image-20211101110657846.png)
+```js
+// 创建 Store 状态容器
+const store = Redux.createStore(reducer);
+// 创建用于处理状态的 reducer 函数
+function reducer(state = initialState, action) {}
+// 获取状态
+store.getState();
+// 订阅状态
+store.subscribe(function () {});
+// 触发Action
+store.dispatch({ type: "description..." });
+```
+
+
 
 示例：
 
@@ -151,7 +174,14 @@ npm install redux react-redux
 
 3. reducer 是一个函数, 函数返回什么, store中就存储什么. 函数名称自定义.
 
-![image-20211101164341309](redux.assets/image-20211101164341309.png)
+```js
+import { createStore } from "redux";
+const store = createStore(reducer);
+function reducer() {
+  return { count: 1 };
+}
+
+```
 
 
 
@@ -159,7 +189,15 @@ npm install redux react-redux
 
 ##### 将store中的数据放在Provider组件中, Provider组件是存储共享数据的地方
 
-![image-20211101164439069](redux.assets/image-20211101164439069.png)
+```js
+import { Provider } from "react-redux";
+
+ReactDOM.render(
+  <Provider store={store}>
+    <App />
+  </Provider>,
+);
+```
 
 
 
@@ -173,7 +211,14 @@ npm install redux react-redux
 
 ![image-20211101164504100](redux.assets/image-20211101164504100.png)
 
-![image-20211101164525679](redux.assets/image-20211101164525679.png)
+```js
+import { connect } from "redux";
+const mapStateToProps = (state) => ({
+  count: state.count,
+});
+export default connect(mapStateToProps)(组件名称);
+
+```
 
 
 
@@ -181,7 +226,9 @@ npm install redux react-redux
 
 ##### 定义 action
 
-![image-20211101164636440](redux.assets/image-20211101164636440.png)
+```js
+{type: "描述对数据要进行什么样的操作"}
+```
 
 action是改变状态的唯一途径
 
@@ -189,13 +236,26 @@ action是改变状态的唯一途径
 
 ##### 组件触发 action
 
-![image-20211101164657087](redux.assets/image-20211101164657087.png)
+```js
+this.props.dispatch({type: "描述对数据要进行什么样的操作"})
+```
 
 
 
 reducer 接收 action, 针对action对数据进行处理并返回
 
-![image-20211101164734085](redux.assets/image-20211101164734085.png)
+```js
+const initialState = { count: 0 };
+const reducer = (state = initialState, action) => {
+  switch (action.type) {
+    case "描述对数据进行什么样的操作":
+      return { count: state.count + 1 };
+    default:
+      return state;
+  }
+};
+
+```
 
 
 
@@ -203,19 +263,31 @@ reducer 接收 action, 针对action对数据进行处理并返回
 
 ##### 传递参数
 
-![image-20211101164753349](redux.assets/image-20211101164753349.png)
+```jsx
+<button onClick={() => increment(5)}>+1</button>
+```
 
 
 
 ##### 接收参数, 传递reducer
 
-![image-20211101164908661](redux.assets/image-20211101164908661.png)
+```js
+export const increment = payload => ({type: INCREMENT, payload});
+```
 
 
 
 ##### reducer根据接收到的数据进行处理
 
-![image-20211101164924802](redux.assets/image-20211101164924802.png)
+```js
+export default (state, action) => {
+  switch (action.type) {
+    case INCREMENT:
+      return { count: state.count + action.payload };
+  }
+};
+
+```
 
 
 
@@ -225,9 +297,23 @@ reducer 接收 action, 针对action对数据进行处理并返回
 
 在组件中通过调用this.props.dispatch({type: '描述对数据进行设么样的操作'})方法触发action. 造成HTML模板在视觉上的混乱.
 
-![image-20211101165007426](redux.assets/image-20211101165007426.png)
+```jsx
+const {increment, decrement} = this.props;
+<button onClick={increment}>+1</button>
+<button onClick={decrement}>-1</button>
+```
 
-![image-20211101165030396](redux.assets/image-20211101165030396.png)
+```js
+const mapDispatchToProps = (dispatch) => ({
+  increment() {
+    dispatch({ type: "increment count" });
+  },
+  decrement() {
+    dispatch({ type: "decrement count" });
+  },
+});
+export default connect(mapStateToProps, mapDispatchToProps)(组件名称);
+```
 
 
 
@@ -235,7 +321,17 @@ reducer 接收 action, 针对action对数据进行处理并返回
 
 触发Action的函数, 内部代码重复率非常高, 所以React提供了方法帮我们生成这些函数, 代替开发者手写.
 
-![image-20211101165050332](redux.assets/image-20211101165050332.png)
+```js
+// store/actions/counter.actions.js
+export const increment = () => ({ type: "increment count" });
+export const decrement = () => ({ type: "decrement count" });
+// 组件
+import { bindActionCreators } from "redux";
+import * as counterActions from "../store/actions/counter.action";
+const mapDispatchToProps = (dispatch) => ({
+  ...bindActionCreators(counterActions, dispatch),
+});
+```
 
 
 
@@ -251,7 +347,15 @@ Action类型字符串组件在触发Action时需要使用, Reducer在接收Actio
 
 React允许将一个大的reducer拆分成若干个小的reducer, 最后进行合并使用.
 
-![image-20211101165133062](redux.assets/image-20211101165133062.png)
+```js
+import { combineReducers } from 'redux'
+export default combineReducers({
+  counter: counterReducer,
+  user: useReducer
+})
+
+/* { counter: {count: 0}, user: {name: "张三", age: 0} } */
+```
 
 
 
@@ -273,7 +377,9 @@ React允许将一个大的reducer拆分成若干个小的reducer, 最后进行�
 
 开发中间件的模板代码
 
-![image-20211102105143838](redux.assets/image-20211102105143838.png)
+```js
+export default store => next => action => {}
+```
 
 
 
@@ -281,7 +387,12 @@ React允许将一个大的reducer拆分成若干个小的reducer, 最后进行�
 
 中间件在开发完成以后只有被注册才能在Redux的工作流程中生效
 
-![image-20211102105200096](redux.assets/image-20211102105200096.png)
+```js
+import { createStore, applyMiddleware } from "redux";
+import logger from "./middlewares/logger";
+
+createStore(reducer, applyMiddleware(logger));
+```
 
 
 
@@ -297,7 +408,14 @@ React允许将一个大的reducer拆分成若干个小的reducer, 最后进行�
 
 4. 当前这个中间件函数在调用你传递进来的函数时，要将dispatch方法传递过去
 
-![image-20211102105417776](redux.assets/image-20211102105417776.png)
+```js	
+export default ({dispatch, getState}) => next => action => {
+  if (typeof action === 'function') {
+    return action(dispatch, getState);
+  }
+  next(action);
+} 
+```
 
 
 
@@ -333,7 +451,13 @@ export const store = createStore(RootReducer, applyMiddleware(thunk));
 
 **使用 redux-thunk 中间件**
 
-![image-20211102105803772](redux.assets/image-20211102105803772.png)
+```js
+const loadPosts = () => async (dispatch) => {
+  const posts = await axios.get("/api/posts").then((response) => response.data);
+  dispatch({ type: LOADPOSTSSUCCESS, payload: posts });
+};
+
+```
 
 
 
@@ -355,31 +479,61 @@ npm install redux-saga
 
 **创建 redux-saga 中间件**
 
-![image-20211102155214943](redux.assets/image-20211102155214943.png)
+```js
+import createSagaMiddleware from 'redux-saga'
+const sagaMiddleware = createSagaMiddleware()
+```
 
 
 
 **注册 sagaMiddleware**
 
-![image-20211102155228310](redux.assets/image-20211102155228310.png)
+```js
+createStore(reducer, applyMiddleware(sagaMiddleware));
+```
 
 
 
 **使用 saga 接收 action 执行异步操作**
 
-![image-20211102155236972](redux.assets/image-20211102155236972.png)
+```js
+import { takeEvery, put } from "redux-saga/effects";
+
+function* load_posts() {
+  const { data } = yield axios.get("/api/posts.json");
+  yield put(load_posts_success(data));
+}
+
+export default function* postSaga() {
+  yield takeEvery(LOAD_POSTS, load_posts);
+}
+
+```
 
 
 
 **启动saga**
 
-![image-20211102155252329](redux.assets/image-20211102155252329.png)
+```js
+import postSaga from './store/sagas/post.saga';
+sagaMiddleware.run(postSaga);
+```
 
 
 
 **合并sagas**
 
-![image-20211102155303849](redux.assets/image-20211102155303849.png)
+```js
+import { all } from "redux-saga/effects";
+import counterSaga from "./counter.saga";
+import postSaga from "./post.saga";
+
+export default function* rootSaga() {
+ yield all([counterSaga(), postSaga()]);
+}
+import rootSaga from "./sagas/root.saga";
+sagaMiddleware.run(rootSaga);
+```
 
 
 
@@ -401,11 +555,165 @@ npm install redux-actions
 
 **创建 Action**
 
-![image-20211102155403932](redux.assets/image-20211102155403932.png)
+```js
+import { createAction } from "redux-actions";
+
+const increment_action = createAction("increment");
+const decrement_action = createAction("decrement");
+```
 
 
 
 **创建 Reducer**
 
-![image-20211102155413623](redux.assets/image-20211102155413623.png)
+```js
+import { handleActions as createReducer } from "redux-actions";
+import { increment_action, decrement_action } from "../actions/counter.action";
+
+const initialState = { count: 0 };
+const counterReducer = createReducer(
+  {
+    [increment_action]: (state, action) => ({ count: state.count + 1 }),
+    [decrement_action]: (state, action) => ({ count: state.count - 1 }),
+  },
+  initialState
+);
+export default counterReducer;
+
+```
+
+
+
+### 源码实现
+
+```js
+function createStore(reducer, preloadedState, enhancer) {
+  // 约束 reducer 参数类型
+  if (typeof reducer !== "function") throw new Error("reducer必须是函数");
+  // 判断 enhancer 参数有没有传递
+  if (typeof enhancer !== "undefined") {
+    // 判断 enhancer 是不是一个函数
+    if (typeof enhancer !== "function") {
+      throw new Error("enhancer必须是函数");
+    }
+    return enhancer(createStore)(reducer, preloadedState);
+  }
+
+  // store 对象中存储的状态
+  var currentState = preloadedState;
+  // 存放订阅者函数
+  var currentListeners = [];
+  // 获取状态（通过闭包保存 currentState 的状态）
+  function getState() {
+    return currentState;
+  }
+
+  // 触发 action
+  function dispatch(action) {
+    // 判断 action 是否是对象
+    if (!isPlainObject(action)) throw new Error("action必须是对象");
+    // 判断对象中是否有 type 属性
+    if (typeof action.type === "undefined")
+      throw new Error("action对象中必须要有type属性");
+    currentState = reducer(currentState, action);
+    // 循环数组，调用订阅者
+    for (var i = 0, len = currentListeners.length; i < len; i++) {
+      // 获取订阅者
+      var listener = currentListeners[i];
+      listener();
+    }
+  }
+
+  // 订阅状态
+  function subscribe(listener) {
+    currentListeners.push(listener);
+  }
+
+  return {
+    getState,
+    dispatch,
+    subscribe,
+  };
+}
+
+// 判断 obj 参数是否是对象
+function isPlainObject(obj) {
+  // 排除基本数据类型和 null
+  if (typeof obj !== "object" || obj == null) return false;
+  //  区分数组和对象，原型对象对比的方式
+  var proto = obj;
+  while (Object.getPrototypeOf(proto) !== null) {
+    proto = Object.getPrototypeOf(proto);
+  }
+  return Object.getPrototypeOf(obj) === proto;
+}
+
+function applyMiddleware(...middlewares) {
+  return function (createStore) {
+    return function (reducer, preloadedState) {
+      // 创建 store
+      var store = createStore(reducer, preloadedState);
+      // 阉割版的 store
+      var middlewareAPI = {
+        getState: store.getState,
+        dispatch: store.dispatch,
+      };
+      // 调用中间件的第一层函数，传递阉割版 store 对象
+      var chain = middlewares.map((middleware) => middleware(middlewareAPI));
+      var dispatch = compose(...chain)(store.dispatch);
+
+      return {
+        ...store,
+        dispatch,
+      };
+    };
+  };
+}
+
+function compose() {
+  var funcs = [...arguments];
+  return function (dispatch) {
+    // 倒序遍历，最后一个中间件函数的 next 其实就是 store.dispatch，调用该 next 则直接调用 reducer
+    for (var i = funcs.length - 1; i >= 0; i--) {
+      dispatch = funcs[i](dispatch);
+    }
+    return dispatch;
+  };
+}
+
+function bindActionCreators(actionCreators, dispatch) {
+  var boundActionCreators = {};
+  for (var key in actionCreators) {
+    (function (key) {
+      boundActionCreators[key] = function () {
+        dispatch(actionCreators[key]());
+      };
+    })(key);
+  }
+  return boundActionCreators;
+}
+
+function combineReducers(reducers) {
+  // 检查 reducer 类型，必须是函数
+  var reducerKeys = Object.keys(reducers);
+  for (var i = 0; i < reducerKeys.length; i++) {
+    var key = reducerKeys[i];
+    if (typeof reducers[key] !== "function")
+      throw new Error("reducer必须是函数");
+  }
+
+  // 调用每一个小的 reducer，将每一个小的 reducer 中返回的状态存储在一个新的大的对象中
+  return function (state, action) {
+    var nextState = {};
+    for (var i = 0; i < reducerKeys.length; i++) {
+      var key = reducerKeys[i];
+      var reducer = reducers[key];
+      var previousStateForKey = state[key];
+      nextState[key] = reducer(previousStateForKey, action);
+    }
+    return nextState;
+  };
+}
+
+```
 
