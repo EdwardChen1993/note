@@ -4,7 +4,7 @@
 
 ## 后端返回图片文件流，前端如何显示到页面上
 
-方法一，使用 URL.createObjectURL 将 Blob 对象转化成图片 url：
+方法一、使用 URL.createObjectURL 将 Blob 对象转化成图片 url：
 
 ```js
 xhr.responseType = "blob";  // xhr 对象的 responseType 需要设置为 blob
@@ -18,7 +18,7 @@ guomiQrCodeImg.src = url;
 
 
 
-方法二，使用 FileReader 读取 Blob 对象，转化成 base64 字符串：
+方法二、使用 FileReader 读取 Blob 对象，转化成 base64 字符串：
 
 ```js
 xhr.responseType = "blob";  // xhr 对象的 responseType 需要设置为 blob        

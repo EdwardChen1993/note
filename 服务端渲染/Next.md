@@ -225,7 +225,7 @@ getStaticProps 方法的作用是获取组件静态生成需要的数据. 并通
 
 ```jsx
 export async function getStaticProps() {
-  //	从文件系统，API，数据库中获取的数据
+  // 从文件系统，API，数据库中获取的数据
   let data = await read(join(process.cwd(), "pages", "_app.js"), "utf-8");
   // props 属性的值将会传递给组件
   return {

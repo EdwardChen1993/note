@@ -1,6 +1,6 @@
 [TOC]
 
-# node
+# node笔记
 
 ## __dirname和process.cwd()的区别
 
