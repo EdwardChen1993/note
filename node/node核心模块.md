@@ -841,5 +841,759 @@ myRmdir('tmp', () => {
 
 
 
-## 模块化历程
+## 模块
 
+### 模块化历程
+
+**传统开发常见问题**
+
++ 命名冲突和污染
++ 代码冗余，无效请求多
++ 文件间的依赖关系复杂
++ 项目难以维护不方便复用
+
+
+
+模块就是小而精且利于维护的代码片段，利用函数、对象、自执行函数实现分块
+
+
+
+**常见的模块化规范**
+
++ Commonjs规范
++ AMD规范 define require requirejs
++ CMD规范 seajs
++ ES modules规范
+
+
+
+模块化是前端走向工程化中的重要一环，早期JavaScript语言层面没有模块化规范，Commonjs、AMD、CMD都是模块化规范
+
+ES6中将模块化纳入标准规范，当前常用的规范是Commonjs与ESM
+
+
+### CommonJS规范
+
+浏览器本身特点：数据基于网络传输、单线程阻塞的加载方式
+所以该规范不能适用于浏览器平台
+CommonJS是语言层面上的规范 类似ECMAScript
+而模块化只是这个规范中的一个部分
+
++ 模块引用
++ 模块定义
++ 模块标识
++ Nodejs与COmmonJS
++ 任意一个文件就是一个模块，具有独立作用域
++ 使用require导入其他模块
++ 将模块ID传入require实现目标模块定位
+
+
+
+**module属性**
+
++ 任意js文件就是一个模块，可以直接使用module属性
++ id:返回模块标识符，一般是一个绝对路径
++ filename:返回文件模块的绝对路径
++ loaded:返回布尔值，标识模块是否加载完成
++ parent：返回对象，存放调用当前模块的模块
++ children:返回数组，存放当前模块调用的其他模块
++ exports:返回当前模块需要暴露的内容
++ paths：返回数组，存放不同目录下的node_modules位置
+
+
+
+**modules.exports与exports的区别**
+
+commonJs规范中只规定了 modules.exports 来执行数据的导出操作
+而exports 实际上是nodejs自己为了方便操作，给每个模块都提供了一个变量，他只是指向了modules.exports所对应的内存地址，因此可以通过exports来导出相应的内容
+
+但是不能直接给exports重新赋值。如果这样做就等于切断了exports合module.exports之间的联系。它就变成局部变量无法向外部提供数据
+
+![image-20220105214312565](node核心模块.assets/image-20220105214312565.png)
+
+
+
+**require属性**
+
++ 基本功能是读入并且执行一个模块文件
++ resolve：返回模块文件的绝对路径
++ extensions：依据不同后缀名执行解析操作
++ main:返回主模块对象
+
+
+
+**总结CommonJS规范**
+
++ CommonJS规范起初是为了弥补JS语言模块化缺陷
++ CommonJS是语言层面的规范，当前主要用于Node.js
++ CommonJS规定模块化分为引入、定义、标识符三个部分
++ Module在任意模块中可直接使用包含模块信息
++ Require接收标识符，加载目标模块
++ modules.exports与exports 都能导出模块数据
++ Commonjs规范定义模块的加载是同步完成 正是这样的一个特点让他不能应用与浏览器平台
+
+
+
+### Nodejs与CommonJS
+
++ 使用module.exports与require实现模块导入与导出
++ module 属性及其常见信息获取
++ exports 导出数据及其与module.exports区别
++ CommonJS规范下的模块同步加载
+
+
+
+导出：
+
+```js
+// 一、模块的导入与导出
+/* const age = 18
+const addFn = (x, y) => {
+  return x + y
+}
+
+module.exports = {
+  age: age, 
+  addFn: addFn
+} */
+
+// 二、module 
+/* module.exports = 1111
+console.log(module) */
+
+// 三、exports
+// exports.name = 'zce'
+/* exports = { // 不能这样使用哈
+  name: 'syy',
+  age: 18
+} */
+
+// 四、同步加载
+/* let name = 'lg'
+let iTime = new Date()
+
+while(new Date() -iTime < 4000) {}
+
+module.exports = name
+console.log('m.js被加载导入了') */
+
+// require.main 返回的是它的parent
+/* console.log(require.main == module) */
+
+// module.exports = 'lg'
+```
+
+导入：
+
+```js
+// 一、导入
+/* let obj = require('./m')
+console.log(obj) */
+
+// 二、module
+// let obj = require('./m')
+
+// 三、exports
+/* let obj = require('./m')
+console.log(obj) */
+
+// 四、同步加载
+/* let obj = require('./m')
+console.log('01.js代码执行了') */
+
+let obj = require('./m')
+console.log(require.main == module)
+```
+
+
+
+### 模块分类及加载流程
+
+**模块分类**
+
++ 内置模块
++ 文件模块
++ 模块加载速度
++ 核心模块：Node源码编译时写入到二进制文件中
++ 文件模块：代码运行时，动态加载
+
+
+
+**加载流程**
+
++ 路径分析：依据标识符（将当前标识符转成绝对路径）确定模块位置
++ 文件定位：确定目标模块中具体的文件及文件类型
++ 编译执行：采用对应的方式完成文件的编译执行
+
+
+
+**路径分析之标识符**
+
++ 路径标识符
++ 非路径标识符（常见于核心模块如fs http path等）
+
+
+
+**文件定位**
+
++ 项目下存在 `m1.js`模块，导入时使用 `require('m1')` 语法
++ `m1.js` -> `m1.json` -> `m1.node`
++ 查找 `package.json` 文件，使用 `JSON.parse()` 解析
++ `main.js` -> `main.json` -> `main.node`
++ 将 `index` 作为目标模块中的具体文件名称
+
+
+
+**编译执行**
+
++ 将某个具体类型的文件按照相应的方式进行编译和执行
++ 创建新的对象，按路径载入，完成编译执行
+
+
+
+**JS文件的编译执行**
+
++ 使用fs模块同步读入目标文件内容
++ 对内容进行语法包装，生成可执行JS函数
++ 调用函数时传入exports、module、require等属性值
+
+
+
+**JSON文件编译执行**
+
++ 将读取到的内容通过JSON.parse()进行解析。然后将结果返回给exportsd对象就可
+
+
+
+**缓存优先原则**
+
+- 提高模块加载速度
+- 当前模块不存在，则经历一次完整加载流程
+- 模块加载完成后，使用路径作为索引进行缓存
+
+
+
+**加载流程小结**
+
+- 路径分析：确定目标模块位置
+- 文件定位：确定目标模块中具体的文件及文件类型
+- 编译执行：对模块内容进行编译，返回可用exports对象
+
+
+
+### VM模块使用
+
+内置模块之VM
+创建独立运行的沙箱环境
+
+```js
+const fs = require('fs')
+const vm = require('vm')
+
+let age = 33
+let content = fs.readFileSync('test.txt', 'utf-8')
+
+// eval
+// eval(content)
+
+// new Function
+/* console.log(age)
+let fn = new Function('age', "return age + 1")
+console.log(fn(age)) */
+// vm.runInThisContext(content)
+vm.runInThisContext("age += 10")
+
+console.log(age)
+```
+
+
+
+### 模块加载模拟实现
+
+**核心逻辑**
+
+- 路径分析
+- 缓存优先
+- 文件定位
+- 编译执行
+
+```js
+const { dir } = require('console')
+const fs = require('fs')
+const path = require('path')
+const vm = require('vm')
+
+function Module (id) {
+  this.id = id
+  this.exports = {}
+  console.log(1111)
+}
+
+Module._resolveFilename = function (filename) {
+  // 利用 Path 将 filename 转为绝对路径
+  let absPath = path.resolve(__dirname, filename)
+  
+  // 判断当前路径对应的内容是否存在（）
+  if (fs.existsSync(absPath)) {
+    // 如果条件成立则说明 absPath 对应的内容是存在的
+    return absPath
+  } else {
+    // 文件定位
+    let suffix = Object.keys(Module._extensions)
+
+    for(var i=0; i<suffix.length; i++) {
+      let newPath = absPath + suffix[i]
+      if (fs.existsSync(newPath)) {
+        return newPath
+      }
+    }
+  }
+  throw new Error(`${filename} is not exists`)
+}
+
+Module._extensions = {
+  '.js'(module) {
+    // 读取
+    let content = fs.readFileSync(module.id, 'utf-8')
+
+    // 包装
+    content = Module.wrapper[0] + content + Module.wrapper[1] 
+    
+    // VM 
+    let compileFn = vm.runInThisContext(content)
+
+    // 准备参数的值
+    let exports = module.exports
+    let dirname = path.dirname(module.id)
+    let filename = module.id
+
+    // 调用
+    compileFn.call(exports, exports, myRequire, module, filename, dirname)
+  },
+  '.json'(module) {
+    let content = JSON.parse(fs.readFileSync(module.id, 'utf-8'))
+
+    module.exports = content
+  }
+}
+
+Module.wrapper = [
+  "(function (exports, require, module, __filename, __dirname) {",
+  "})"
+]
+
+Module._cache = {}
+
+Module.prototype.load = function () {
+  let extname = path.extname(this.id)
+  
+  Module._extensions[extname](this)
+}
+
+function myRequire (filename) {
+  // 1 绝对路径
+  let mPath = Module._resolveFilename(filename)
+  
+  // 2 缓存优先
+  let cacheModule = Module._cache[mPath]
+  if (cacheModule) return cacheModule.exports
+
+  // 3 创建空对象加载目标模块
+  let module = new Module(mPath)
+
+  // 4 缓存已加载过的模块
+  Module._cache[mPath] = module
+
+  // 5 执行加载（编译执行）
+  module.load()
+
+  // 6 返回数据
+  return module.exports
+}
+
+let obj = myRequire('./v')
+let obj2 = myRequire('./v')
+console.log(99,obj.age) 
+console.log(88,obj2.age)
+```
+
+
+
+## Events
+
+通过EventEmitter类实现事件统一管理
+**events与EventEmitter**
+
++ node.js是基于事件驱动的异步操作架构，内置events模块
++ events模块提供了EventEmitter类
++ node.js中很多内置核心模块继承EventEmitter 例如fs、net、http等
+
+
+
+**EventEmitter常见API**
+
++ on:添加当事件被触发时调用的回调函数
++ emit:触发事件，按照注册的顺序同步调用每个事件监听器
++ once:添加当事件在注册之后首次被触发时调用的回调函数
++ off：移除特定的监听器
+
+```js
+const EventEmitter = require('events')
+
+const ev = new EventEmitter()
+
+// on 
+/* ev.on('事件1', () => {
+  console.log('事件1执行了---2')
+})
+
+ev.on('事件1', () => {
+  console.log('事件1执行了')
+})
+
+// emit
+ev.emit('事件1')
+ev.emit('事件1') */
+
+// once 
+/* ev.once('事件1', () => {
+  console.log('事件1执行了')
+})
+ev.once('事件1', () => {
+  console.log('事件1执行了--2')
+})
+
+ev.emit('事件1')
+ev.emit('事件1') */
+
+// off
+/* let cbFn = (...args) => {
+  console.log(args)
+}
+ev.on('事件1', cbFn) */
+
+/* ev.emit('事件1')
+ev.off('事件1', cbFn) */
+// ev.emit('事件1', 1, 2, 3)
+
+/* ev.on('事件1', function () {
+  console.log(this)
+})
+ev.on('事件1', function () {
+  console.log(2222)
+})
+
+ev.on('事件2', function () {
+  console.log(333)
+})
+
+ev.emit('事件1') */
+
+const fs = require('fs')
+
+const crt = fs.createReadStream()
+crt.on('data')
+```
+
+
+
+### 发布订阅模式
+
+定义对象间一对多的依赖关系
+
+![image-20220105215359181](node核心模块.assets/image-20220105215359181.png)
+
+**发布订阅要素**
+
+- 缓存队列，存放订阅者信息
+- 具有增加、删除订阅的能力
+- 状态改变时通知所有订阅者执行监听
+
+
+
+发布订阅中存在调度中心
+状态发生改变时，发布订阅无须主动通知
+
+```js
+class PubSub{
+  constructor() {
+    this._events = {}
+  }
+
+  // 注册
+  subscribe(event, callback) {
+    if (this._events[event]) {
+      // 如果当前 event 存在，所以我们只需要往后添加当前次监听操作
+      this._events[event].push(callback)
+    } else {
+      // 之前没有订阅过此事件
+      this._events[event] = [callback]
+    }
+  }
+
+  // 发布
+  publish(event, ...args) {
+    const items = this._events[event]
+    if (items && items.length) {
+      items.forEach(function (callback) {
+        callback.call(this, ...args)
+      })
+    }
+  }
+}
+
+let ps = new PubSub()
+ps.subscribe('事件1', () => {
+  console.log('事件1执行了')
+})
+ps.subscribe('事件1', () => {
+  console.log('事件1执行了---2')
+})
+
+ps.publish('事件1')
+ps.publish('事件1')
+```
+
+
+
+### EventEmitter模拟
+
+```js
+function MyEvent () {
+  // 准备一个数据结构用于缓存订阅者信息
+  this._events = Object.create(null)
+}
+
+MyEvent.prototype.on = function (type, callback) {
+  // 判断当前次的事件是否已经存在，然后再决定如何做缓存
+  if (this._events[type]) {
+    this._events[type].push(callback)
+  } else {
+    this._events[type] = [callback]
+  }
+}
+
+MyEvent.prototype.emit = function (type, ...args) {
+  if (this._events && this._events[type].length) {
+    this._events[type].forEach((callback) => {
+      callback.call(this, ...args)
+    })
+  }
+}
+
+MyEvent.prototype.off = function (type, callback) {
+  // 判断当前 type 事件监听是否存在，如果存在则取消指定的监听
+  if (this._events && this._events[type]) {
+    this._events[type] = this._events[type].filter((item) => {
+      return item !== callback && item.link !== callback
+    })
+  }
+}
+
+MyEvent.prototype.once = function (type, callback) {
+  let foo = function (...args) {
+    callback.call(this, ...args)
+    this.off(type, foo)
+  }
+  foo.link = callback
+  this.on(type, foo)
+}
+
+let ev = new MyEvent()
+
+let fn = function (...data) {
+  console.log('事件1执行了', data)
+}
+
+/* ev.on('事件1', fn)
+ev.on('事件1', () => {
+  console.log('事件1----2')
+})
+
+ev.emit('事件1', 1, 2)
+ev.emit('事件1', 1, 2) */
+
+/* ev.on('事件1', fn)
+ev.emit('事件1', '前')
+ev.off('事件1', fn)
+ev.emit('事件1', '后') */
+
+ev.once('事件1', fn)
+// ev.off('事件1', fn)
+ev.emit('事件1', '前')
+```
+
+
+
+### 浏览器中的事件循环
+
+**完整事件循环执行顺序**
+
+- 从上而下执行所有的同步代码
+- 执行过程中将遇到的宏任务与微任务添加至相应的队列
+- 同步代码执行完毕后，执行满足条件的微任务回调
+- 微任务队列执行完毕后执行所有满足需求的宏任务回调
+- 循环事件环操作
+
+```js
+// setTimeout(() => {
+//   console.log('s1')
+//   Promise.resolve().then(() => {
+//     console.log('p1')
+//   })
+//   Promise.resolve().then(() => {
+//     console.log('p2')
+//   })
+// })
+
+// setTimeout(() => {
+//   console.log('s2')
+//   Promise.resolve().then(() => {
+//     console.log('p3')
+//   })
+//   Promise.resolve().then(() => {
+//     console.log('p4')
+//   })
+// })
+
+setTimeout(() => {
+  console.log('s1')
+  Promise.resolve().then(() => {
+    console.log('p2')
+  })
+  Promise.resolve().then(() => {
+    console.log('p3') 
+  })
+})
+
+Promise.resolve().then(() => {
+  console.log('p1')
+  setTimeout(() => {
+    console.log('s2')
+  })
+  setTimeout(() => {
+    console.log('s3')
+  })
+})
+
+// p1 s1 p2 p3 s2 s3
+```
+
+
+
+### Nodejs中的事件循环
+
+![image-20220105215606911](node核心模块.assets/image-20220105215606911.png)
+
+
+
+**队列说明**
+
++ timers：执行 setTimout 与 setlnterval 回调
++ pending callbacks：执行系统操作的回调，例如 tcp udp
++ idle, prepare：只在系统内部进行使用
++ poll：执行与1/0相关的回调
++ check：执行 setlmmediate 中的回调
++ close callbacks：执行 close事件的回调
+
+
+
+**Nodejs 完整事件环**
+
++ 执行同步代码，将不同的任务添加至相应的队列
++ 所有同步代码执行后会去执行满足条件微任务
++ 所有微任务代码执行后会执行 timer 队列中满足的宏任务
++ timer 中的所有宏任务执行完成后就会依次切换队列
++ 注意：在完成队列切换之前会先清空微任务代码
+
+```js
+setTimeout(() => {
+  console.log('s1')
+})
+
+Promise.resolve().then(() => {
+  console.log('p1')
+})
+
+console.log('start')
+
+process.nextTick(() => {
+  console.log('tick')
+})
+
+setImmediate(() => {
+  console.log('setimmediate')
+})
+
+console.log('end')
+
+// start,  end, tick, p1, s1,  st
+```
+
+
+
+### Nodejs事件循环理解
+
+```js
+setTimeout(() => {
+  console.log('s1')
+  Promise.resolve().then(() => {
+    console.log('p1')
+  })
+  process.nextTick(() => {
+    console.log('t1')
+  })
+})
+
+Promise.resolve().then(() => {
+  console.log('p2')
+})
+
+console.log('start')
+
+setTimeout(() => {
+  console.log('s2')
+  Promise.resolve().then(() => {
+    console.log('p3')
+  })
+  process.nextTick(() => {
+    console.log('t2')
+  })
+})
+
+console.log('end')
+
+// start, end， p2, s1, s2 , t1, t2, p1, p3
+```
+
+
+
+### Nodejs与浏览器事件循环区别
+
+**Node 与浏览器事件环不同**
+
++ 任务队列数不同
++ Nodejs 微任务执行时机不同
++ 微任务优先级不同
+
+
+
+**任务队列数**
+
++ 浏览器中只有二个任务队列
++ Nodejs 中有6个事件队列
+
+
+
+**微任务执行时机**
+
++ 二者都会在同步代码执行完毕后执行微任务
++ 浏览器平台下每当一个宏任务执行完毕后就清空微任务
++  Nodejs 平台在事件队列切换时会去清空微任务
+
+
+
+**微任务优先级**
+
++ 浏览器事件环中，微任务存放于事件队列，先进先出
++ Nodejs 中process.nextTick 先于 promise.then
