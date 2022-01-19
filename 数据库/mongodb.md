@@ -129,7 +129,7 @@ NoSQL 数据库有一个缺点：其在事务处理与一致性方面无法与 R
 
 ## MongoDB 简介
 
-![image.png](Mongodb.assets/1604328119528-7919816e-6178-47e3-b775-0d9bfed5666b.png)
+![image.png](MongoDB.assets/1604328119528-7919816e-6178-47e3-b775-0d9bfed5666b.png)
 
 
 
@@ -144,7 +144,7 @@ NoSQL 数据库有一个缺点：其在事务处理与一致性方面无法与 R
 
 - MongoDB 将数据存储为一个文档，数据结构由键值(key=>value)对组成。MongoDB 文档类似于 JSON 对象。字段值可以包含其他文档，数组及文档数组。
 
-![img](Mongodb.assets/1604459344700-418329ca-3c73-4aa7-8ecf-c6cf93eb625d.png)
+![img](MongoDB.assets/1604459344700-418329ca-3c73-4aa7-8ecf-c6cf93eb625d.png)
 
 - MongoDB 的查询功能非常强大
 
@@ -555,7 +555,7 @@ https://docs.mongodb.com/manual/reference/limits/#naming-restrictions
 
 集合类似于关系数据库中的表，MongoDB 将文档存储在集合中。
 
-![img](Mongodb.assets/1604488927220-2f3363e6-dc7a-4103-b745-895aa19b3af5.svg)
+![img](MongoDB.assets/1604488927220-2f3363e6-dc7a-4103-b745-895aa19b3af5.svg)
 
 
 
@@ -612,7 +612,7 @@ db.集合名称.drop()
 - [BSON 规范](http://bsonspec.org/)
 - [BSON 支持的数据类型](https://docs.mongodb.com/manual/reference/bson-types/)
 
-![img](Mongodb.assets/1604546663341-8e1f15b9-800d-4cf5-a5ef-29fa7fbe1d77.svg)
+![img](MongoDB.assets/1604546663341-8e1f15b9-800d-4cf5-a5ef-29fa7fbe1d77.svg)
 
 
 
@@ -725,7 +725,7 @@ MongoDB 提供以下方法，用于将文档插入集合中：
 | `db.collection.insertMany()` | 插入多个文档到集合中        |
 | `db.collection.insert()`     | 将1个或多个文档插入到集合中 |
 
-![img](Mongodb.assets/1604313944549-a98ee89a-a84d-4115-8d2a-9c32e1d93759.svg)
+![img](MongoDB.assets/1604313944549-a98ee89a-a84d-4115-8d2a-9c32e1d93759.svg)
 
 
 
@@ -1453,7 +1453,7 @@ db.inventory.find( { item : { $exists: false } } )
 
 您可以指定标识要更新的文档的条件或过滤器。这些过滤器使用与读取操作相同的语法。
 
-![img](Mongodb.assets/1604314104709-3f5831c9-ac49-4c38-aacd-97619bf4ba99.svg)
+![img](MongoDB.assets/1604314104709-3f5831c9-ac49-4c38-aacd-97619bf4ba99.svg)
 
 测试数据：
 
@@ -1562,7 +1562,7 @@ db.inventory.replaceOne(
 
 您可以指定标准或过滤器，以标识要删除的文档。这些过滤器使用与读取操作相同的语法。
 
-![img](Mongodb.assets/1604314172728-55b56ab9-9a54-41de-ae9d-5c9b3c724890.svg)
+![img](MongoDB.assets/1604314172728-55b56ab9-9a54-41de-ae9d-5c9b3c724890.svg)
 
 
 
