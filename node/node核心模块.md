@@ -1492,7 +1492,7 @@ Promise.resolve().then(() => {
 + timers：执行 setTimout 与 setlnterval 回调
 + pending callbacks：执行系统操作的回调，例如 tcp udp
 + idle, prepare：只在系统内部进行使用
-+ poll：执行与1/0相关的回调
++ poll：执行与 I/O 相关的回调
 + check：执行 setlmmediate 中的回调
 + close callbacks：执行 close事件的回调
 
@@ -1597,3 +1597,791 @@ console.log('end')
 
 + 浏览器事件环中，微任务存放于事件队列，先进先出
 + Nodejs 中process.nextTick 先于 promise.then
+
+
+
+## stream
+
+linux中可以使用ls|grep*.js 可以过滤出以js结尾的文件
+Node.js诞生之初就是为了提高IO性能
+文件操作系统和网咯模块实现了流接口
+Node.js中的流就是处理流式数据的抽象接口
+
+![image-20220110152116109](node核心模块.assets/image-20220110152116109.png)
+
+
+
+常见问题
+
+- 同步读取资源文件，用户需要等待数据读取完成
+- 资源文件最终一次性加载至内存，开销较大
+
+![image-20220110152138144](node核心模块.assets/image-20220110152138144.png)
+
+![image-20220110152153800](node核心模块.assets/image-20220110152153800.png)
+
+
+
+流处理数据的优势
+
+- 时间效率：流的分段处理可以同时操作多个数据 chunk
+- 空间效率：统一时间流无须占用巨大内存空间
+- 使用方便：流配合管理，扩展程序变得简单
+
+
+
+Node.js内置了stream，它实现了流操作对象
+
+Node.js中流的分类
+
+Readable：可读流，能够实现数据的读取
+Writeable：可写流，能够实现数据的写操作
+Duplex：双工流，即可读又可写
+Transform：转换流，可读可写，还能实现数据转换
+
+Node.js流特点
+
+Stream模块实现了四个具体的抽象
+所有流都继承自EventEmitter
+
+```js
+const fs = require('fs')
+
+let rs = fs.createReadStream('./test.txt')
+let ws = fs.createWriteStream('./test1.txt')
+// 拷贝操作
+rs.pipe(ws)
+```
+
+
+
+### 可读流
+
+生产供程序消费数据的流
+
+自定义可读流
+
+- 继承stream里的Readable
+- 重写_read 方法调用push产出数据
+
+
+
+消费数据为什么存在二种方式？
+流动模式、暂停模式
+
+![image-20220110152859657](node核心模块.assets/image-20220110152859657.png)
+
+
+消费数据
+
+- readable事件：当流中存在可读取数据时触发
+- data事件：当流中数据块传递给消费者后触发
+
+可读流总结
+
+- 明确数据生产与消费流程
+- 利用API实现自定义的可读流
+- 明确数据消费的事件使用
+
+自定义可读流
+
+```js
+const { Readable } = require("stream");
+
+let source = ["lg", "zce", "syy"];
+
+class MyReadable extends Readable {
+  constructor(source) {
+    super();
+    this.source = source;
+  }
+
+  _read() {
+    let data = this.source.shift() || null;
+    this.push(data);
+  }
+}
+
+let myReadable = new MyReadable(source);
+
+// myReadable.on("readable", () => {
+//   let data = null;
+//   while (((data = myReadable.read(2)) !== null)) {
+//     console.log(data.toString());
+//   }
+// });
+
+myReadable.on("data", (chunk) => {
+  console.log(chunk.toString())
+});
+```
+
+
+
+### 可写流
+
+用于消费数据的流
+
+自定义可写流
+
+- 继承stream模块的Writeable
+- 重写——write方法，调用write执行写入
+
+```js
+const { Writable } = require("stream");
+
+class MyWriteable extends Writable {
+  constructor() {
+    super();
+  }
+
+  _write(chunk, en, done) {
+    process.stdout.write(chunk.toString() + '----------')
+    process.nextTick(done)
+  }
+}
+
+const myWriteable = new MyWriteable()
+
+myWriteable.write('我是陈泽华','utf-8', () => {
+  console.log('end')
+})
+```
+
+可写流事件
+
+- pipe事件：可毒瘤调用pipe()方法时触发
+- unpipe事件：可读流调用unpipe()方法时触发
+- …
+
+
+
+### 双工和转换流
+
+Duplex && Transform
+Node.js中stream是流操作的抽象接口集合
+可读、可写、双工、转换是单一抽象具体实现
+流操作的核心功能就是处理数据
+Node.js诞生的初衷就是解决密集型IO事务
+Node.js中处理数据模块继承了流和EventEmitter
+stream、四种类型流、实现流操作的模块
+Duplex是双工流，既能生产又能消费
+自定义双工流
+
+- 继承Duplex类
+- 重写_read方法，调用push生产数据
+- 重写_write方法，调用write消费数据
+
+```js
+let {Duplex} = require('stream')
+
+class MyDuplex extends Duplex{
+  constructor(source) {
+    super()
+    this.source = source
+  }
+  _read() {
+    let data = this.source.shift() || null 
+    this.push(data)
+  }
+  _write(chunk, en, next) {
+    process.stdout.write(chunk)
+    process.nextTick(next)
+  }
+}
+
+let source = ['a', 'b', 'c']
+let myDuplex = new MyDuplex(source)
+
+/* myDuplex.on('data', (chunk) => {
+  console.log(chunk.toString())
+}) */
+myDuplex.write('我是泽华', () => {
+  console.log(1111)
+})
+```
+
+
+
+Transform也是一个双工流
+自定义转换流
+
+- 继承Transform类
+- 重写_transform方法，调用push和callback
+- 重写_flush方法，处理剩余数据
+
+```js
+let {Transform} = require('stream')
+
+class MyTransform extends Transform{
+  constructor() {
+    super()
+  }
+  _transform(chunk, en, cb) {
+    this.push(chunk.toString().toUpperCase())
+    cb(null)
+  }
+}
+
+let t = new MyTransform()
+
+t.write('a')
+
+t.on('data', (chunk) => {
+  console.log(chunk.toString())
+})
+```
+
+
+
+### 文件可读流创建和消费、文件可读流事件与应用
+
+```js
+const fs = require('fs')
+
+let rs = fs.createReadStream('test.txt', {
+  flags: 'r', // 可读模式
+  encoding: null, 
+  fd: null, // 文件标识符
+  mode: 438, // 权限rw 8进制0O666 10进制438
+  autoClose: true, // 表示自动关闭文件
+  start: 0, // 表示从当前底层的哪个位置开始读取
+  // end: 3, // 表示从当前底层的哪个位置结束读取
+  highWaterMark: 2 // 表示每次读取的字节数
+})
+
+/* rs.on('data', (chunk) => {
+  console.log(chunk.toString())
+  rs.pause() // 暂定
+  setTimeout(() => {
+    rs.resume() // 取消暂停 流动
+  }, 1000)
+}) */
+
+/* rs.on('readable', () => {
+  let data = rs.read()
+  console.log(data)
+  let data
+  while((data = rs.read(1)) !== null) {
+    console.log(data.toString())
+    console.log('----------', rs._readableState.length) // 缓存区的字节长度
+  }
+}) */
+
+rs.on('open', (fd) => {
+  console.log(fd, '文件打开了')
+})
+
+// close默认情况并不会被触发。因为默认文件的可读流是一个暂停模式
+// 所以close必需在数据被消费之后才能被触发
+rs.on('close', () => {
+  console.log('文件关闭了')
+})
+let bufferArr = []
+rs.on('data', (chunk) => {
+  bufferArr.push(chunk)
+})
+
+rs.on('end', () => {
+  console.log(Buffer.concat(bufferArr).toString())
+  console.log('当数据被清空之后')
+})
+
+rs.on('error', (err) => {
+  console.log('出错了') // 比如上述路径test.txt错误
+})
+```
+
+
+
+### 文件可写流
+
+```js
+const fs = require('fs')
+
+const ws = fs.createWriteStream('test.txt', {
+  flags: 'w', 
+  mode: 438,
+  fd: null, // 默认 从3开始
+  encoding: "utf-8",
+  start: 0,
+  highWaterMark: 3 // 考虑到有汉字内容
+})
+
+let buf = Buffer.from('abc')
+
+// 字符串 或者  buffer ===》 fs rs
+/* ws.write(buf, () => {
+  console.log('ok2')
+}) */
+
+/* ws.write('我是泽华', () => {
+  console.log('ok1')
+}) */
+
+/* ws.on('open', (fd) => {
+  console.log('open', fd)
+}) */
+
+ws.write("2")
+
+// close 是在数据写入操作全部完成之后再执行
+/* ws.on('close', () => {
+  console.log('文件关闭了')
+}) */
+
+// end 执行之后就意味着数据写入操作完成
+ws.end('我是泽华')
+
+
+// error
+ws.on('error', (err) => {
+  console.log('出错了')
+})
+```
+
+
+
+### drain与写入速度
+
+```js
+/**
+ * 需求：“我是泽华” 写入指定的文件
+ * 01 一次性写入
+ * 02 分批写入
+ * 对比：
+ */
+let fs = require('fs')
+
+let ws = fs.createWriteStream('test.txt', {
+  highWaterMark: 3
+})
+
+// ws.write('我是泽华')
+let source = "我是泽华".split('')
+let num = 0
+let flag = true
+
+function executeWrite () {
+  flag = true
+  while(num !== 4 && flag) {
+    flag = ws.write(source[num])
+    num++
+  }
+}
+
+executeWrite()
+
+ws.on('drain', () => {
+  console.log('drain 执行了')
+  executeWrite()
+})
+
+// pipe
+```
+
+
+
+### 背压机制
+
+Node.js的stream已实现二楼背压机制
+数据读写时可能存在的问题：
+
+内存溢出、GC频繁调用、其他进程变慢
+
+![image-20220110153703827](node核心模块.assets/image-20220110153703827.png)
+
+![image-20220110153812920](node核心模块.assets/image-20220110153812920.png)
+
+```js
+let fs = require('fs')
+
+let rs = fs.createReadStream('test.txt', {
+  highWaterMark: 4
+})
+
+let ws = fs.createWriteStream('test1.txt', {
+  highWaterMark: 1
+})
+
+let flag = true
+
+/* rs.on('data', (chunk) => {
+  flag = ws.write(chunk, () => {
+    console.log('写完了')
+  })
+  if (!flag) {
+    rs.pause()
+  }
+})
+
+ws.on('drain', () => {
+  rs.resume()
+}) */
+
+rs.pipe(ws)
+```
+
+
+
+### 模拟文件可读流
+
+```js
+const fs = require("fs");
+const EventEmitter = require("events");
+
+class MyFileReadStream extends EventEmitter {
+  constructor(path, options = {}) {
+    super();
+
+    this.path = path;
+    this.flags = options.flags || "r";
+    this.mode = options.mode || 438;
+    this.autoClose = options.autoClose || true;
+    this.start = options.start || 0;
+    this.end = options.end;
+    this.highWaterMark = options.highWaterMark || 64 * 1024;
+    this.readOffset = 0;
+
+    this.open();
+
+    // 注册新事件时候会触发 newListener
+    this.on("newListener", (type) => {
+      if (type === "data") {
+        this.read();
+      }
+    });
+  }
+
+  open() {
+    fs.open(this.path, this.flags, this.mode, (err, fd) => {
+      if (err) {
+        this.emit("error", err);
+      }
+      this.fd = fd;
+      this.emit("open", fd);
+    });
+  }
+
+  read() {
+    if (typeof this.fd !== "number") {
+      return this.once("open", this.read);
+    }
+
+    let buf = Buffer.alloc(this.highWaterMark);
+
+    let howMuchToRead = this.end
+      ? Math.min(this.end - this.readOffset + 1, this.highWaterMark)
+      : this.highWaterMark;
+
+    fs.read(
+      this.fd,
+      buf,
+      0,
+      howMuchToRead,
+      this.readOffset,
+      (err, readBytes) => {
+        if (readBytes) {
+          this.readOffset += readBytes;
+          this.emit("data", buf.slice(0, readBytes));
+          this.read();
+        } else {
+          this.emit("end");
+          this.close();
+        }
+      }
+    );
+  }
+
+  close() {
+    fs.close(this.fd, () => {
+      this.emit("close");
+    });
+  }
+
+  pipe(ws) {
+    this.on("data", (data) => {
+      let flag = ws.write(data);
+      if (!flag) {
+        this.pause();
+      }
+    });
+
+    ws.on("drain", () => {
+      this.resume();
+    });
+  }
+}
+
+let rs = new MyFileReadStream("test.txt", {
+  end: 7,
+  highWaterMark: 3,
+});
+
+// rs.on("open", (fd) => {
+//   console.log("open", fd);
+// });
+
+// rs.on("error", (err) => {
+//   console.log("error", err);
+// });
+
+rs.on("data", (chunk) => {
+  console.log(chunk);
+});
+
+// rs.on("close", () => {
+//   console.log('close');
+// });
+
+// rs.on("end", () => {
+//   console.log("end");
+// });
+
+module.exports = MyFileReadStream;
+```
+
+
+
+### 链表结构
+
+数组缺点
+
+- 数组存储数据的长度具有上限
+- 数据存在塌陷问题
+
+链表是一系列节点的集合
+每个节点都具有指向下一个节点的属性
+
+链表分类：
+
+- 双向链表
+- 单向链表
+- 循环链表
+
+单向
+
+![image-20220110153944149](node核心模块.assets/image-20220110153944149.png)
+
+
+
+### 单向链表实现
+
+```js
+class Node {
+  constructor(element, next) {
+    this.element = element;
+    this.next = next;
+  }
+}
+
+class LinkedList {
+  constructor(head, size) {
+    this.head = null;
+    this.size = 0;
+  }
+
+  _getNode(index) {
+    if (index < 0 || index >= this.size) {
+      throw new Error("越界了");
+    }
+    let currentNode = this.head;
+    for (let i = 0; i < index; i++) {
+      currentNode = currentNode.next;
+    }
+    return currentNode;
+  }
+
+  add(index, element) {
+    if (arguments.length === 1) {
+      element = index;
+      index = this.size;
+    }
+
+    if (index < 0 || index > this.size) {
+      throw new Error("cross the border");
+    }
+
+    if (index === 0) {
+      let head = this.head;
+      this.head = new Node(element, head);
+    } else {
+      let prevNode = this._getNode(index - 1);
+      prevNode.next = new Node(element, prevNode.next);
+    }
+    this.size++;
+  }
+
+  remove(index) {
+    let rmNode = null;
+    if (index === 0) {
+      rmNode = this.head;
+      if (!rmNode) {
+        return undefined;
+      }
+      this.head = rmNode.next;
+    } else {
+      let prevNode = this._getNode(index - 1);
+      rmNode = prevNode.next;
+      prevNode.next = prevNode.next.next;
+    }
+    this.size--;
+    return rmNode;
+  }
+
+  set(index, element) {
+    let node = this._getNode(index);
+    node.element = element;
+  }
+
+  get(index) {
+    return this._getNode(index);
+  }
+
+  clear() {
+    this.head = null;
+    this.size = 0;
+  }
+}
+
+class Queue {
+  constructor() {
+    this.linkedList = new LinkedList()
+  }
+
+  enQueue(data) {
+    this.linkedList.add(data)
+  }
+
+  deQueue() {
+    return this.linkedList.remove(0)
+  }
+}
+
+module.exports = Queue;
+```
+
+
+
+### 文件可写流实现
+
+```js
+const fs = require("fs");
+const EventEmitter = require("events");
+const Queue = require("./linked-list");
+
+class MyWriteStream extends EventEmitter {
+  constructor(path, options = {}) {
+    super();
+    this.path = path;
+    this.flags = options.flags || "w";
+    this.mode = options.mode || 438;
+    this.autoClose = options.autoClose || true;
+    this.start = options.start || 0;
+    this.encoding = options.encoding || "utf8";
+    this.highWaterMark = options.highWaterMark || 64 * 1024;
+
+    this.open();
+
+    this.writeOffset = this.start;
+    this.writing = false;
+    this.writeLen = 0;
+    this.needDrain = false;
+    this.cache = new Queue();
+  }
+
+  open() {
+    fs.open(this.path, this.flags, this.mode, (err, fd) => {
+      if (err) {
+        this.emit("error", err);
+      }
+      this.fd = fd;
+      this.emit("open", fd);
+    });
+  }
+
+  write(chunk, encoding, cb) {
+    chunk = Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk);
+
+    this.writeLen += chunk.length;
+    let flag = this.writeLen < this.highWaterMark;
+    this.needDrain = !flag;
+
+    if (this.writing) {
+      // 当前正在执行写入，所以内容应该排队
+      this.cache.enQueue({
+        chunk,
+        encoding,
+        cb,
+      });
+    } else {
+      this.writing = true;
+      // 当前不是正在写入，那么就执行写入
+      this._write(chunk, encoding, () => {
+        cb();
+        // 清空排队的内容
+        this._clearBuffer();
+      });
+    }
+
+    return flag;
+  }
+
+  _write(chunk, encoding, cb) {
+    if (typeof this.fd !== "number") {
+      return this.once("open", () => {
+        return this._write(chunk, encoding, cb);
+      });
+    }
+
+    fs.write(
+      this.fd,
+      chunk,
+      this.start,
+      chunk.length,
+      this.writeOffset,
+      (err, written) => {
+        this.writeOffset += written;
+        this.writeLen -= written;
+
+        cb && cb();
+      }
+    );
+  }
+
+  _clearBuffer() {
+    let data = this.cache.deQueue();
+    if (data) {
+      this._write(data.element.chunk, data.element.encoding, () => {
+        data.element.cb && data.element.cb();
+        this._clearBuffer();
+      });
+    } else {
+      if (this.needDrain) {
+        this.needDrain = false;
+        this.emit("drain");
+      }
+    }
+  }
+}
+
+const ws = new MyWriteStream("./test3.txt", {
+  highWaterMark: 1,
+});
+ws.on("open", (fd) => {
+  console.log("open", fd);
+});
+
+ws.write("1", "utf8", () => {
+  console.log("write");
+});
+
+ws.write("23", "utf8", () => {
+  console.log("write");
+});
+
+ws.on('drain', () => {
+  console.log('drain')
+})
+```
+
