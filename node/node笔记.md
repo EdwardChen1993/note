@@ -124,3 +124,32 @@ process.exit(0);
 - exec比spawn易于使用，当子进程返回的数据不超过200K时，exec比spawn更适合。
 - 当子进程需要返回大量数据时，spawn更安全。
 - spawn提供了更多的选项，可以对子进程进行更详细的设置。
+
+
+
+## 静态资源的绝对路径与相对路径
+
+**绝对路径：**
+
+`http://example.com/main.css`
+
+**相对路径：**
+
+`../public/css/main.css`
+
+在 file 协议中，相对于**当前文件**
+
+在 http 协议中，相对于**当前网页的 url 地址**
+
+| 网页url地址 | 相对路径               | 结果路径               |
+| ----------- | ---------------------- | ---------------------- |
+| /           | ../public/css/main.css | /public/css/main.css   |
+| /a/b        | ../public/css/main.css | /public/css/main.css   |
+| /a/b/c      | ../public/css/main.css | /a/public/css/main.css |
+
+
+
+
+
+
+
