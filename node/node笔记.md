@@ -147,7 +147,7 @@ process.exit(0);
 | /a/b        | ../public/css/main.css | /public/css/main.css   |
 | /a/b/c      | ../public/css/main.css | /a/public/css/main.css |
 
-
+**备注：/a/b/c，相当于/a/b目录下的c文件。**
 
 
 
