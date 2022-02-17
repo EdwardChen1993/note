@@ -213,23 +213,248 @@ NoSQL 数据库有一个缺点：其在事务处理与一致性方面无法与 R
 
 ## 安装
 
-安装包方式：[官方文档](https://docs.MongoDB.com/manual/administration/install-community/)
+### 在 macOS 中安装 MongoDB
 
-docker方式：[官方文档](https://hub.docker.com/_/mongo)
+#### 安装说明
 
-安装成功后，使用命令验证是否安装成功：
+- 关于 MongoDB 的版本号
 
-```bash
-mongo -version
+- - 奇数为开发版（4.3），建议开发环境使用
+  - 偶数为稳定版（4.4），建议生产环境使用
+
+- 从版本 3.2 之后不再支持 32 位操作系统
+- 课程中使用到的版本是最新稳定版 4.4
+
+- - 仅支持 MacOS 10.13 及更高版本
+
+
+
+在 macOS 上安装 MongoDB 有两种方式：
+
+- 使用 [Homebrew](https://brew.sh/) 安装 MongoDB
+- 下载 .tgz 压缩包手动安装
+
+
+
+建议尽可能使用 Homebrew 包管理器安装 MongoDB。使用程序包管理器会自动安装所有必需的依赖项，并简化以后的升级和维护任务。
+
+
+
+#### 使用 homebrew 安装 MongoDB
+
+如果已经安装了 Homebrew 的可以跳过前两步。
+
+1、安装 Command Line Tools for Xcode
+
+如果你电脑上安装了 XCode 软件开发工具（在App Store中安装Xcode），Command Line Tools for Xcode已经给你安装好了。
+
+也可以直接安装 Command Line Tools for Xcode。在终端输入以下代码完成安装：
+
+```shell
+xcode-select --install
 ```
 
-![image-20210427144814804](MongoDB.assets/image-20210427144814804.png)
 
-然后查看目录，先启动mongod，再启动mongo：
 
-![image-20210427144701290](MongoDB.assets/image-20210427144701290.png)
+2、安装 [Homebrew](https://brew.sh/)
 
-连接成功，MongoDB默认端口是27017：
+```shell
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
+```
+
+
+
+3、添加 MongoDB 安装源到 Homebrew
+
+```shell
+brew tap mongodb/brew
+```
+
+
+
+4、使用 homebrew 安装 MongoDB
+
+```shell
+brew install mongodb-community@4.4
+```
+
+该安装除安装必要的二进制文件之外，还会创建运行 MongoDB 服务所需的文件目录：
+
+- MongoDB 配置文件：`/usr/local/etc/mongod.conf`
+- 日志文件存储目录：`/usr/local/var/log/mongodb`
+
+- 数据文件存储目录：`/usr/local/var/mongodb`
+
+
+
+#### 管理 MongoDB 服务
+
+
+
+##### 启动 MongoDB
+
+启动 MongoDB 并运行在后台。
+
+```shell
+brew services start mongodb-community@4.4
+```
+
+
+
+或者手动启动 MongoDB，运行在前台。也可以加入 --fork 参数运行在后台。
+
+```shell
+mongod --config /usr/local/etc/mongod.conf
+```
+
+
+
+##### 查看 MongoDB 服务运行状态
+
+要验证MongoDB是否正在运行，请在正在运行的进程中搜索 mongod：
+
+```shell
+ps aux | grep -v grep | grep mongod
+```
+
+还可以通过查看日志文件以查看 mongod 进程的当前状态：`/usr/local/var/log/mongodb/mongo.log`。
+
+
+
+##### 停止 MongoDB
+
+```shell
+brew services stop mongodb-community@4.4
+```
+
+
+
+##### 卸载 MongoDB
+
+```shell
+brew uninstall mongodb-community@4.4
+```
+
+
+
+
+
+### 在 Windows 中安装 MongoDB
+
+#### 安装说明
+
+- 关于 MongoDB 的版本号
+
+- - 奇数为开发版（4.3），建议开发环境使用
+  - 偶数为稳定版（4.4），建议生产环境使用
+
+- 从版本 3.2 之后不再支持 32 位操作系统
+- 课程中使用到的版本是最新稳定版 4.4
+
+- MongoDB 4.4 支持的 Windows 64 位系统版本
+
+- - Windows Server 2019
+  - Windows 10 / Windows Server 2016
+
+
+
+#### 安装
+
+1、下载安装包
+
+2、运行安装程序
+
+![img](MongoDB.assets/1604295244059-3e4616d1-671e-46a9-99f0-c2888b929d7f.png)
+
+点击 Next 下一步
+
+![img](MongoDB.assets/1604295262767-8cf2de39-250e-46c4-a45f-b98023a277a4.png)
+
+勾选同意协议，点击 Next 下一步
+
+![img](MongoDB.assets/1604295335348-6557f677-5ef9-4b7f-9b40-f4c6e819b0b1.png)
+
+这里选择安装方式：
+
+- Complete：完整安装
+- Custom：自定义安装
+
+我这里选择 Complete 完整安装。
+
+![img](MongoDB.assets/1604295389658-bf91176d-c3d9-48ec-8ddc-1a0b6081eaef.png)
+
+从 MongoDB 4.0 开始，可以在安装过程中将 MongoDB 设置为 Windows 服务，也可以仅安装二进制文件。
+
+Service Name：服务名称
+
+Data Directory：数据存储位置
+
+Log Directory：日期存储位置
+
+![img](https://cdn.nlark.com/yuque/0/2020/png/152778/1604295701912-b080d39a-5458-4e15-bef5-98c802b75048.png?x-oss-process=image%2Fwatermark%2Ctype_d3F5LW1pY3JvaGVp%2Csize_18%2Ctext_5ouJ5Yu-5pWZ6IKy%2Ccolor_FFFFFF%2Cshadow_50%2Ct_80%2Cg_se%2Cx_10%2Cy_10)
+
+MongoDB Compass 是 MongoDB 官网提供的一个集创建数据库、管理集合和文档、运行临时查询、评估和优化查询、性能图表、构建地理查询等功能为一体的MongoDB可视化管理工具。
+
+不建议在这里勾选安装，因为它要在线下载然后安装，比较耗时。如果需要，可以单独去官网下载安装。
+
+![img](MongoDB.assets/1604295711062-cfa685c4-d8af-446a-8225-1ba6c336fd94.png)
+
+点击 Install 开始安装
+
+![img](MongoDB.assets/1604295760738-46ea113f-9a60-4962-9add-ebd00e032073.png)
+
+安装中...
+
+![img](MongoDB.assets/1604295780058-e7bf5c58-2f82-4a2d-aa80-0652f37eaa88.png)
+
+安装完成，点击 Finish 结束安装
+
+
+
+#### 管理 MongoDB 服务
+
+##### 作为 Windows 服务的启动和停止
+
+如果你将 MongoDB 安装为 Windows 的服务了，则 MongoDB 已经自动启动了，并且默认会开启启动。
+
+（1）打开 Windows 服务控制台
+
+打开运行，输入 `services.msc` 打开。
+
+
+
+（2）启动、停止、暂停、恢复、重新启动
+
+![img](MongoDB.assets/1604302685844-9500b6be-a049-45ac-b0d3-b48acae3512f.png)
+
+
+
+##### 使用命令方式启动和停止
+
+如果没有把 MongoDB 安装 Windows 服务，则需要按照下面的方式来启动 MongoDB。
+
+1、将 MongoDB 安装目录中的 bin 目录配置到系统 PATH 环境变量
+
+2、创建数据存储目录
+
+MongoDB 的默认数据目录路径是启动 MongoDB 的驱动器上的绝对路径 `\data\db`。
+
+```shell
+cd c:\
+md "\data\db"
+```
+
+3、启动 MongoDB 服务
+
+```shell
+mongod
+```
+
+`--dbpath` 选项用来指定数据存储目录，默认使用 MongoDB 程序所在驱动器上的绝对路径 `\data\db`。
+
+
+
+MongoDB默认端口是27017：
 
 ![image-20210427164403409](MongoDB.assets/image-20210427164403409.png)
 
