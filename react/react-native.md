@@ -1949,4 +1949,750 @@ react-native-image-picker 允许我们从设备中选择图片，或直接通过
       }
       ```
 
+
+
+
+## 路由与导航
+
+### 简介
+
+在 React 中实现路由，有两种方案，分别对应两个不同的场景
+
++ React-Router 
+
+  React-Router 适用于 Web 项目。
+
++ React-Navigation
+
+  React Native 没有像浏览器那样的内置导航 API （location对象，history对象）。React Native 中 的导航是通过 React-Navigation 来完成的。React Native 把导航和路由都集中到了 ReactNavigation 中。
+
+> RN 0.44 之前，React-Navigation 在核心中维护，0.44 之后，与核心分离，独立维护。 官网：https://reactnavigation.org/ 中文手册: https://reactnavigation.org/docs/zh-Hans/getting-started.html
+
+
+
+React-Navigation 常用的组件有四个
+
++ StackNavigator
+
+  栈导航器在 React Native 中的作用，相当于 BOM 中的 history 对象。用来跳转页面和传递参数。 与浏览器端导航不同的是。 StackNavigator 还提供了路由之间的 手势 和 动画 。 **只有声明了栈导航之后，才能在 React Native 中执行跳转**。
+
++ TabNavigator
+
+  标签导航器（例如：底部标签栏），用来区分模块。
+
++ DrawerNavigator
+
+  抽屉导航器，在 App 侧面划出的导航页面。
+
++ MaterialTopTabNavigator
+
+  支持左右滑动的 Tab 菜单
+
+
+
+### 基础安装
+
+在正式开始学习 React Native 路由之前，我们需要先安装相关的组件和依赖
+
+1. 安装组件
+
+   ```bash
+   # 安装 react-navigation 核心组件
+   yarn add @react-navigation/native
+   # 安装相关的依赖
+   yarn add react-native-reanimated react-native-gesture-handler react-nativescreens react-native-safe-area-context @react-native-community/masked-view
+   ```
+
+2. 链接组件
+
+   安装完成之后，我们还需要将相关组件和依赖，连接到操作系统平台中（Android 或 iOS）。 从 0.60 之后, 链接会自动执行. 因此，我们不再需要运行 react-native link 
+
+   但是，**如果你是在 iOS 下，还需要运行下面的命令来完成链接**
+
+   ```bash
+   npx pod-install ios
+   ```
+
+3. 添加头部组件
+
+   最后一步，你需要将如下代码，放到应用的头部（例如：放到 index.js 或 App.js 文件的头部 ）
+
+   ```jsx
+   import 'react-native-gesture-handler';
+   // 其他引入
+   ```
+
+   > 注意：如果你忽略了这一步，你的应用上线后可能会崩溃（虽然开发环境一切正常）
+
+4. 添加导航容器
+
+   我们需要在入口文件中，把整个应用，包裹在导航容器（**NavigationContainer**）中（例如：在 index.js 或 App.js 文件中）。然后将其他应用代码，写在 NavigationContainer 组件中间。
+
+   ```jsx
+   import 'react-native-gesture-handler';
+   import * as React from 'react';
+   import { NavigationContainer } from '@react-navigation/native';
+   export default function App() {
+   	return (
+   		<NavigationContainer>
+   			{/* 具体的导航 */}
+   		</NavigationContainer>
+   	);
+   }
+   ```
+
+5. 使用具体的导航
+
+   完成以上 4 个步骤后，就可以在导航容器中使用具体的导航了。下面我们会一一介绍具体的导航。 主要包括：
+
+   + Stack 导航
+   + BottomTab 导航
+   + Drawer 导航
+   + MaterialTopTab 导航
+
+
+
+
+
+### Stack 导航
+
+在浏览器中，我们可以通过 标签，来实现不同页面之间的跳转。当用户点击链接时，URL 地址会被推 送到 history 的栈中。当用户点击回退按钮时，浏览器会从 history 栈的顶部弹出一项，然后我们所处的 **当前页面**，其实就是之前访问过的页面。但是，RN 中没有浏览器的内置 history 栈。而 React Navigation 的 **Stack 导航实现了类似浏览器端 history 栈的功能。可以在 RN 的不用屏幕之间进行跳 转，并管理跳转地址**。
+
+在 RN 中，如果想做跳转。必须先声明 Stack 导航
+
+1. 安装组件
+
+   ```bash
+   yarn add @react-navigation/stack
+   ```
+
+   或
+
+   ```bash
+   npm install @react-navigation/stack
+   ```
+
+2. 使用组件
+
+   ```jsx
+   import * as React from 'react';
+   import {View, Text, Button} from 'react-native';
+   import {NavigationContainer} from '@react-navigation/native';
+   import {createStackNavigator} from '@react-navigation/stack';
+   function HomeScreen({navigation}) {
+     return (
+       <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+         <Text style={{fontSize: 40}}>Home Screen</Text>
+         <Button
+           onPress={() => navigation.navigate('Details')}
+           title="跳转到详情
+   页"
+         />
+       </View>
+     );
+   }
+   function DetailsScreen({navigation}) {
+     return (
+       <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+         <Text style={{fontSize: 40}}>Details Screen</Text>
+         <Button onPress={() => navigation.navigate('Home')} title="回首页" />
+       </View>
+     );
+   }
+   const Stack = createStackNavigator();
+   function App() {
+     return (
+       <NavigationContainer>
+         <Stack.Navigator initialRouteName="Details">
+           <Stack.Screen name="Home" component={HomeScreen} />
+           <Stack.Screen name="Details" component={DetailsScreen} />
+         </Stack.Navigator>
+       </NavigationContainer>
+     );
+   }
+   export default App;
+   ```
+
+   我们可以通过 Screen 组件来声明路由。
+
+   Screen 组件有两个必选属性，分别是 name 和 component。
+
+   + name 是路由名称
+   + component 是组件名称**（不接受函数）**
+   + 类组件可以通过 **this.props.navigation.navigate(路由名称)** 方式来跳转
+
+3. 扩展属性
+
+   + Navigator 扩展
+
+     + initialRouteName 导航初始化路由名称（第一个加载的路由）。注意： **initialRouteName 发生改变时，需要重新启动应用。RN 的热更新对 initialRouteName 不起作用。**
+     + headerMode
+       + float：iOS 的通用模式
+       + screen：Android 的通用模式
+       + none：隐藏 header （包括 screen 的header）
+
+   + Screen 扩展
+
+     + options
+
+       ```jsx
+       <Stack.Navigator initialRouteName="Home">
+         <Stack.Screen
+           name="Home"
+           component={HomeScreen}
+           options={{
+             title: '首页', // 屏幕标题
+             headerStyle: {
+               backgroundColor: '#dfb', // 头部背景
+               height: 50, // 头部高度
+             },
+             headerTitleStyle: {
+               // 头部字体样式
+               color: 'blue',
+               fontSize: 20,
+               fontWeight: 'bold',
+             },
+             headerShown: true, // 是否显示 header
+             headerTitleAlign: 'left', // header 标题排序方式 left | center
+             // 设置头部右侧内容
+             headerRight: () => (
+               <TouchableOpacity onPress={() => alert('Hello')}>
+                 <Text
+                   style={{
+                     fontSize: 18,
+                     fontWeight: 'bold',
+                     color: 'black',
+                     marginRight: 20,
+                   }}>
+                   关于
+                 </Text>
+               </TouchableOpacity>
+             ),
+           }}
+         />
+         <Stack.Screen name="Details" component={DetailsScreen} />
+       </Stack.Navigator>;
+       ```
+
+       > options 选项，主要用来设置屏幕头部信息，例如：高度，颜色，字体大小等。
+
+
+
+### BottomTab 导航
+
+1. 安装组件
+
+   ```bash
+   yarn add @react-navigation/bottom-tabs
+   ```
+
+   或
+
+   ```bash
+   npm install @react-navigation/bottom-tabs
+   ```
+
+2. 使用组件
+
+   ```jsx
+   import * as React from 'react';
+   import {Text, View} from 'react-native';
+   import {NavigationContainer} from '@react-navigation/native';
+   import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+   function HomeScreen() {
+     return (
+       <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+         <Text>Home!</Text>
+       </View>
+     );
+   }
+   function SettingsScreen() {
+     return (
+       <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+         <Text>Settings!</Text>
+       </View>
+     );
+   }
+   const Tab = createBottomTabNavigator();
+   export default function App() {
+     return (
+       <NavigationContainer>
+         <Tab.Navigator>
+           <Tab.Screen name="Home" component={HomeScreen} />
+           <Tab.Screen name="Settings" component={SettingsScreen} />
+         </Tab.Navigator>
+       </NavigationContainer>
+     );
+   }
+   ```
+
+3. 为 Tab 导航菜单，设置小图标
+
+   1.  安装图标组件
+
+      React-native-vector-icons 是著名的图标组件，包含了世界各大公司的矢量图标。使用之前先 安装：
+
+      ```bash
+      npm install --save react-native-vector-icons
+      ```
+
+   2. 将图标文件关联到应用
+
+      不同环境下的关联方式不同，详情查看：[https://github.com/oblador/react-native-vector-icons](https://github.com/oblador/react-native-vector-icons)
+
+      + iOS
+
+        项目根目录下运行：react-native link react-native-vector-icons
+
+      + Android
+
+        编辑 `android/app/build.gradle` ( 不是 android/build.gradle ) 并添加如下内容:
+
+        ```bash
+        apply from: "../../node_modules/react-native-vectoricons/fonts.gradle"
+        ```
+
+        **然后重新运行项目。**
+
+   3. 代码实现
+
+      ```jsx
+      // 引入图标组件
+      import Ionicons from 'react-native-vector-icons/Ionicons';
+      // (...)
+      export default function App() {
+        return (
+          <NavigationContainer>
+            <Tab.Navigator
+              screenOptions={({route}) => ({
+                tabBarIcon: ({focused, color, size}) => {
+                  let iconName;
+                  if (route.name === 'Home') {
+                    iconName = focused
+                      ? 'ios-information-circle'
+                      : 'ios-information-circle-outline';
+                  } else if (route.name === 'Settings') {
+                    iconName = focused ? 'settings' : 'settings-outline';
+                  }
+                  // You can return any component that you like here!
+                  return <Ionicons name={iconName} size={size} color={color} />;
+                },
+              })}
+              tabBarOptions={{
+                activeTintColor: 'tomato',
+                inactiveTintColor: 'gray',
+              }}>
+              <Tab.Screen name="Home" component={HomeScreen} />
+              <Tab.Screen name="Settings" component={SettingsScreen} />
+            </Tab.Navigator>
+          </NavigationContainer>
+        );
+      }
+      ```
+
       
+
+### Drawer 导航
+
+1. 安装组件
+
+   ```bash
+   yarn add @react-navigation/drawer
+   ```
+
+   或
+
+   ```bash
+   npm install @react-navigation/drawer
+   ```
+
+2. 使用组件
+
+   ```jsx
+   import * as React from 'react';
+   import {View, Text, Button} from 'react-native';
+   import {NavigationContainer} from '@react-navigation/native';
+   import {createDrawerNavigator} from '@react-navigation/drawer';
+   function Feed({navigation}) {
+     return (
+       <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+         <Text style={{fontSize: 40}}>Feed Screen</Text>
+         <Button title="Open drawer" onPress={() => navigation.openDrawer()} />
+         <Button title="Toggle drawer" onPress={() => navigation.toggleDrawer()} />
+       </View>
+     );
+   }
+   function Notifications() {
+     return (
+       <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+         <Text style={{fontSize: 40}}>Notifications Screen</Text>
+       </View>
+     );
+   }
+   const Drawer = createDrawerNavigator();
+   export default function App() {
+     return (
+       <NavigationContainer>
+         <Drawer.Navigator>
+           <Drawer.Screen name="Feed" component={Feed} />
+           <Drawer.Screen name="Notifications" component={Notifications} />
+         </Drawer.Navigator>
+       </NavigationContainer>
+     );
+   }
+   ```
+
+3. 扩展属性
+
+   ```jsx
+   <Drawer.Navigator
+     drawerPosition={'right'} // 菜单右侧显示
+     drawerType="slide" // 设置抽屉菜单动画效果
+     drawerStyle={{
+       backgroundColor: '#cdb', // 设置抽屉菜单背景色
+       width: 180, // 设置抽屉菜单宽度
+     }}
+     drawerContentOptions={{
+       activeTintColor: '#e91e63', // 设置活跃字体颜色
+       itemStyle: {
+         // 设置菜单项样式
+         marginVertical: 20, // 设置菜单的垂直外间距
+       },
+     }}>
+     <Drawer.Screen name="Feed" component={Feed} />
+     <Drawer.Screen
+       name="Notifications"
+       component={Notifications}
+       options={{
+         title: '通知', // 菜单标题
+       }}
+     />
+   </Drawer.Navigator>;
+   ```
+
+   
+
+### MaterialTopTab 导航
+
+生成可以左右滑动的 Tab 导航
+
+1. 安装
+
+   ```bash
+   yarn add @react-navigation/material-top-tabs react-native-tab-view
+   ```
+
+   或
+
+   ```bash
+   npm install @react-navigation/material-top-tabs react-native-tab-view
+   ```
+
+2. 使用
+
+   ```bash
+   import * as React from 'react';
+   import {Text, View} from 'react-native';
+   import {NavigationContainer} from '@react-navigation/native';
+   import {createMaterialTopTabNavigator} from '@react-navigation/materialtop-tabs';
+   function OrderUnpayScreen() {
+     return (
+       <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+         <Text style={{fontSize: 40}}>待付款!</Text>
+       </View>
+     );
+   }
+   function OrderPaidScreen() {
+     return (
+       <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+         <Text style={{fontSize: 40}}>待发货!</Text>
+       </View>
+     );
+   }
+   function OrderSentScreen() {
+     return (
+       <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+         <Text style={{fontSize: 40}}>待收获!</Text>
+       </View>
+     );
+   }
+   function OrderFinishScreen() {
+     return (
+       <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+         <Text style={{fontSize: 40}}>待评价!</Text>
+       </View>
+     );
+   }
+   const Tab = createMaterialTopTabNavigator();
+   export default function App() {
+     return (
+       <NavigationContainer>
+         <Tab.Navigator>
+           <Tab.Screen
+             name="OrderUnpay"
+             component={OrderUnpayScreen}
+             options={{title: '待付款'}}
+           />
+           <Tab.Screen
+             name="OrderPaid"
+             component={OrderPaidScreen}
+             options={{title: '待发货'}}
+           />
+           <Tab.Screen
+             name="OrderSent"
+             component={OrderSentScreen}
+             options={{title: '待收获'}}
+           />
+           <Tab.Screen
+             name="OrderFinish"
+             component={OrderFinishScreen}
+             options={{title: '待评价'}}
+           />
+         </Tab.Navigator>
+       </NavigationContainer>
+     );
+   }
+   ```
+
+3. 属性配置
+
+   + Navigator 属性
+
+     + tabBarPosition
+
+       标签显示的位置，默认是 top，如果想把标签设置在底部，可以使用 bottom。
+
+     + tabBarOptions
+
+       包含 tabBar 组件属性的对象。
+
+       + activeTintColor - 当前标签的标签或图标颜色。
+       + inactiveTintColor - 非当前标签的标签或图标颜色。 
+       + showIcon - 是否显示图标, 默认是 false。 
+       + showLabel - 是否显示文字, 默认是 true。 
+       + tabStyle - 标签样式对象。 
+       + labelStyle - 标签文字样式对象。这里指定的颜色，会覆盖 activeTintColor 和 inactiveTintColor 的值。 
+       + iconStyle - 图标样式对象。
+
+     ```jsx
+     <Tab.Navigator
+       tabBarPosition='bottom' // 显示位置 top | bottom
+       tabBarOptions={{
+         labelStyle: { fontSize: 16 },
+         tabStyle: { // 标签样式
+         borderColor: '#dfb',
+         borderWidth: 1,
+         },
+         activeTintColor: 'red', // 当前标签的字体或图标颜色
+         inactiveTintColor: '#666', // 非当前标签的字体或图标颜色
+         showIcon: true, // 是否显示图标
+         showLabel: true, // 是否显示文字
+         style: { backgroundColor: 'powderblue' },
+       }}
+     />
+     ```
+
+   + Screen 属性
+
+     + options
+
+       设置 Screen 组件的对象
+
+       + title - 设置标签文字
+       + tabBarIcon - 设置标签图标。需要现在 Navigator 中指定 showIcon: true。 其值为函数，包含两个参数：{ focused: boolean, color: string }。
+         + focused 用来判断标签是否获取焦点，
+         + color 为当前标签的颜色
+       + tabBarLabel - 设置标签文字内容（当未定义时，会使用 title 字段） 其值为函数，包含两个参数：{ focused: boolean, color: string }。
+
+     ```jsx
+     <Tab.Screen
+       name="OrderPaid"
+       component={OrderPaidScreen}
+       options={{
+         title: '待发货',
+         tabBarIcon: ({focused, color}) => {
+           return (
+             <Ionicons name={'arrow-redo-circle-outline'} size={20} color={color} />
+           );
+         },
+       }}
+     />;
+     ```
+
+     
+
+
+
+## 架构原理
+
+为了更好的理解 React Native，我们需要了解 RN 的架构原理。这里主要介绍两个内容
+
++ 现有架构
+
+  当前 RN 正在使用的架构
+
++ 新架构
+
+  2018年6月，Facebook推出了 RN 的重构计划。我们需要了解下一代 RN 的架构原理。
+
+
+
+### 现有架构
+
+#### 架构模型
+
+基本架构模型如下：
+
++ Native 是原生部分，例如：iOS 原生 或 Android 原生
+
++ JS 端主要是 React 语法
+
++ Bridge 用与 Native 和 JS 的通信
+
+  因为 Native 和 JS 相对独立。彼此通信是通过桥接器（Bridge）来实现。
+
+![image-20220226171841244](react-native.assets/image-20220226171841244.png)
+
+详细一点的架构模型
+
+![image-20220226171858041](react-native.assets/image-20220226171858041.png)
+
++ 最上层提供类 React 支持，运行在 JSC 提供的 JavaScript 运行时环境中
+
++ Bridge 层将 JavaScript 与 Native 世界连接起来。具体的：
+
+  Shadow Tree 用来定义 UI 效果及交互功能， 
+
+  Native Modules 提供 Native 功能（比如蓝牙）
+
++ 二者之间通过 JSON 消息相互通信
+
+
+
+#### 线程模型
+
++ JS 线程
+
+  + JS 代码的执行线程，将源码通过 Metro 打包后，传给 JS 引擎进行解析
+
++ Main 线程（也称为 UI 线程 或 原生线程）
+
+  + 主要负责原生渲染（Native UI）和调用原生模块（Native Modules）
+
++ Shadow 线程（也称为 Layout 线程）
+
+  + 创建 Shadow Tree 来模拟 React 结构树（类似虚拟 DOM）
+  + 再由 Yoga 引擎将 Flexbox 等样式，解析成原生平台的布局方式
+
+  > RN使用 Flexbox 布局，但是原生是不支持，Yoga 用来将 Flexbox 布局转换为原生平台的布 局方式。
+
+
+
+#### 渲染机制
+
++ JS 线程将视图信息（结构、样式、属性等）传递给 Shadow 线程，
+
++ 创建出用于布局计算的 Shadow Tree，Shadow 线程计算好布局之后，再将完整的视图信息（包括 宽高、位置等）传递给主线程
+
++ 主线程据此创建 Native View（UI）
+
+  ![image-20220226172053583](react-native.assets/image-20220226172053583.png)
+
+也可以通过下图，来理解渲染过程：
+
+![image-20220226172106010](react-native.assets/image-20220226172106010.png)
+
+
+
+#### 线程间通信
+
+![image-20220226172124390](react-native.assets/image-20220226172124390.png)
+
+现有架构启动流程
+
+![image-20220226172136284](react-native.assets/image-20220226172136284.png)
+
+
+
+### 新架构 
+
+#### 新旧架构对比
+
+![image-20220226172155365](react-native.assets/image-20220226172155365.png)
+
+
+
+#### 新架构的主要改动
+
++ JavaScript 层：
+  + 支持 React 16+ 的新特征
+  + 增强 JS 静态类型检查（CodeGen）
+  + 引入 JSI，允许替换不同的 JavaScript 引擎。支持 JS 与 Native 直接通信
++ Bridge 层：
+  + 划分成 Fabric 和 TurboModules 两部分，分别负责 UI 管理与 Native 模块
++ Native 层：
+  + 精简核心模块，将非核心部分拆分出去，作为社区模块，独立更新维护
+
+
+
+**增强类型检查**
+
++ CodeGen 是 FaceBook 推出的代码生成工具
+
+  通过 CodeGen，自动将 Flow 或者 TypeScript 等有静态类型的 JS 代码翻译成 Fabric 和 TurboModules 使用的接口文件。
+
++ 加入类型约束后的作用：
+
+  + 减少了数据类型错误 
+  + 减少了数据验证的次数，提高了通信性能
+
+> 举个例子：JS 中的数字经常被引号引起来，从而将数字类型转成了字符串。将转换后的数字传递 给 bridge 的时候，通常 iOS 下会静默失败，而 Android 会崩溃。 另外。类型约束对通信性能也有一定提升。因为，在加入类型约束之前，每次通信都需要进行数据 验证。加载类型约束之后，我们就没有必要每次通信都进行数据验证了。减少了数据验证的次数， 就会提高通信性能。
+
+
+
+**JSI（JavaScript Interface）**
+
+不同于之前直接将 JavaScript 代码输入给 JSC，新的架构中引入了一层 JSI（JavaScript Interface），作 为 JSC 之上的抽象
+
+![image-20220226172343038](react-native.assets/image-20220226172343038.png)
+
++ JSI 是一个用C++写成的轻量级框架。其作用主要有两个：
+  + 通过 JSI，可以实现 JS 引擎的更换
+  + 通过 JSI，可以通过 JS 直接调用 Native
+    + JS 对象可以直接获得 C++ 对象(Host Objects)引用，从而允许 JS 与 Native 的直接调用
+    + 减少不必要的线程通信
+    + 省去了序列化和反序列化的成本
+    + 减轻了通信压力，提高了通信性能
+
+
+
+**优化 Bridge 层**
+
++ Fabric
+
+  + 简化了 UI 渲染
+
+  Fabric 简化了 React Native 渲染，简化之前渲染流程中，有复杂跨线程交互（React -> Native -> Shadow Tree -> Native UI）。优化之后，直接在 C++ 层创建 JavaScript 与 Native 共享的 Shadow Tree，并通过 JSI 层将 UI 操作接口暴露给 JavaScript，允许 JavaScript 直接控制高优先级 的 UI 操作，甚至允许同步调用（应对列表快速滚动、页面切换、手势处理等场景）。这样避免了 跨线程的操作，极大地提高了UI的响应速度。
+
++ Turbo Modules
+
+  + 通过 JSI，可以让 JS 直接调用 Native 模块，实现同步操作 
+  + 实现 Native 模块按需加载，减少启动时间，提高性能
+
+  之前所有 Native Modules（无论是否需要用到）都要在应用启动时进行初始化，因为 Native 不知 道 JS 将会调用哪些功能模块。而新的 Turbo Modules 允许按需加载 Native 模块，并在模块初始 化之后直接持有其引用，不再依靠消息通信来调用模块功能。因此，应用的启动时间也会有所提升
+
+
+
+**精简核心（Lean Core）**
+
++ 将 react-native 核心包进行瘦身
+  + RN 推出多年，其核心包太过臃肿 
+  + 有些包在项目中用不到，每次也要引入，造成资源浪费
++ 非必要的包，移到社区模块，单独维护
+  + 例如：AsyncStorage、WebView 等
+
+
+
+新架构启动流程
+
+![image-20220226172631373](react-native.assets/image-20220226172631373.png)
