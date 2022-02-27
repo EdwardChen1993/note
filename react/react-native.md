@@ -1427,7 +1427,7 @@ react-native link @react-native-async-storage/async-storage
 
 3. 在 `android/app/src/main/java/your/package/MainApplication.java` 中，添加如下代码
 
-   ```bash
+   ```java
    package com.myapp;
    import com.reactnativecommunity.asyncstorage.AsyncStoragePackage; // 添加
    这一行
@@ -1609,7 +1609,7 @@ Geolocation 是 React Native 中用来定位的组件。
 
        如下图：
 
-       ```bash
+       ```xml
        <plist version="1.0">
        	<dict>
        		...
@@ -1693,7 +1693,7 @@ npm install react-native-camera --save
 
     在 `android/app/src/main/AndroidManifest.xml` 文件下，添加权限相关设置
 
-    ```bash
+    ```xml
     <!-- 必填项 -->
     <uses-permission android:name="android.permission.CAMERA" />
     <!-- 相册设置（非必要，不添加） -->
@@ -1733,7 +1733,7 @@ npm install react-native-camera --save
 
     在 ios/项目名称/Info.plist 文件中添加允许权限的配置
 
-    ```bash
+    ```xml
     <!-- iOS 10+ -->
     <key>NSCameraUsageDescription</key>
     <string>第一次访问摄像头时，展示给用户的消息</string>
@@ -1753,7 +1753,7 @@ npm install react-native-camera --save
     ```bash
     pod 'react-native-camera', path: '../node_modules/react-native-camera',
     subspecs: [
-    'BarcodeDetectorMLKit'
+    	'BarcodeDetectorMLKit'
     ]
     ```
 
@@ -1852,10 +1852,9 @@ react-native-image-picker 允许我们从设备中选择图片，或直接通过
 
         如下图：
 
-        ```bash
+        ```xml
         <plist version="1.0">
         	<dict>
-        	...
         		<key>NSPhotoLibraryUsageDescription</key>
         		<string>$(PRODUCT_NAME) would like access to your photo gallery</string>
         		<key>NSCameraUsageDescription</key>
@@ -1867,27 +1866,27 @@ react-native-image-picker 允许我们从设备中选择图片，或直接通过
         	</dict>
         </plist>
         ```
-
+      
       > 如果上述配置不起作用，请参考 [官方文档](https://github.com/react-native-image-picker/react-native-image-picker/blob/2.3.4/docs/Install.md) 的手动配置，
-
+      
    3. 使用
-
+   
       react-native-image-picker 中有三个方法
-
+   
       + showImagePicker(options, callback)
-
+   
         弹出一个对话框，提供两个选项（1. 去拍照，2.在相册中选取图片）
-
+   
       + launchCamera(options, callback)
-
+   
         直接调用摄像头去拍照
-
+   
       + launchImageLibrary(options, callback)
-
+   
         直接访问本地相册
-
+   
       下面，以 showImagePicker 为例，演示 react-native-image-picker 的执行效果
-
+   
       ```jsx
       import React, {Component} from 'react';
       import {Text, StyleSheet, View, TouchableOpacity, Image} from 'react-native';
@@ -2696,3 +2695,100 @@ React-Navigation 常用的组件有四个
 新架构启动流程
 
 ![image-20220226172631373](react-native.assets/image-20220226172631373.png)
+
+
+
+## 使用第三方 UI 组件
+
+RN 官方组件太过简单，而自己去写样式又太浪费时间。而选择一些成熟的，第三方UI组件库。会让我 们的项目开发事半功倍。 
+
+这里列出一些比较流行的
+
++ NativeBase 目前在 Github 上有 14.5k 个星
+
+  官网：https://nativebase.io/
+
++ react-native-paper 目前在 Github 上有 6.8k 个星
+
+  官网：https://reactnativepaper.com/
+
+
+
+这里我们推荐 react-native-paper
+
+1. 安装
+
+   ```bash
+   yarn add react-native-paper
+   ```
+
+2. 使用
+
+   先将整个应用，通过 Provider 包裹起来。
+
+   ```jsx
+   import {Provider as PaperProvider} from 'react-native-paper';
+   export default function Main() {
+     return (
+       <PaperProvider>
+         <App />
+       </PaperProvider>
+     );
+   }
+   ```
+
+   然后再项目中使用具体的组件
+
+   ```jsx
+   import {Button} from 'react-native-paper';
+   <Button icon="camera" mode="contained" onPress={() => console.log('Pressed')}>
+     Press me
+   </Button>;
+   ```
+
+   
+
+## 修改应用 logo 
+
+应用图标对尺寸有要求，比较简单地方式是，准备一张 1024*1024 的图片，然后 [在线生成](https://icon.wuruihong.com/)。生成之 后，我们可以将生成的图标下载下来。解压后，我们会得到两个目录：
+
++ android
+
+  ![image-20220227173855630](react-native.assets/image-20220227173855630.png)
+
++ ![image-20220227173909165](react-native.assets/image-20220227173909165.png)
+
+分别将上述目录，复制到 RN 项目对应的位置中
+
+1. Android
+
+   替换 `android/app/src/main/res` 下对应的内容。
+
+2. iOS
+
+   替换 `ios/项目名称/Images.xcassets/AppIcon.appiconset` 中的内容。
+
+
+
+## 修改应用名称
+
++ Android
+
+  编辑 `android/app/src/main/res/values/strings.xml`
+
+  ```xml
+  <resources>
+  	<string name="app_name">你的应用名称</string>
+  </resources>
+  ```
+
++ iOS
+
+  编辑 `ios/项目名称/Info.plist` 文件，定位到 CFBundleDisplayName
+
+  ```xml
+  <key>CFBundleDisplayName</key>
+  <string>你的应用名称</string>
+  ```
+
+  
