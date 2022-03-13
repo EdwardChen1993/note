@@ -2243,6 +2243,8 @@ Future greet() async {
 
 通过 part 与 part of，可以构建功能负载的库。其中 part 用来引入分库，part of 用来在分库中，与主 库建立联系
 
+![8D897A86BF44E7D2A12071F812662DF5](dart.assets/8D897A86BF44E7D2A12071F812662DF5.jpg)
+
 + 声明分库
 
   Camera.dart
