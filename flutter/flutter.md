@@ -4176,3 +4176,307 @@ Widget build(BuildContext context) {
    ```
 
 3. 切换终端（模拟器）主题，查看效果
+
+
+
+
+
+### 异步 UI 更新
+
+试想这样一种场景：异步请求接口，在数据还未请求回来的时候，UI 就已经更新了。此时，UI 会因为拿 不到数据而报错。 
+
+而异步 UI 更新，就是为了解决这一问题的。其基本思路是：**先等待数据请求，后刷新 UI**
+
+FutureBuilder 是对 Future 的封装。我们先来看看它的构造方法
+
+```dart
+FutureBuilder({
+	Key key,
+	Future<dynamic> future,
+	dynamic initialData,
+	Widget Function(BuildContext, AsyncSnapshot<dynamic>) builder
+})
+```
+
++ **future：** 接收 `Future<T>` 类型的值，实际上就是我们的异步函数，通常是接口请求函数
+
++ **initialData：** 初始数据，在异步请求完成之前使用
+
++ **builder**：是一个回调函数，接收两个参数一个 `AsyncWidgetBuilder<T>` 类型的值
+
+  ```dart
+  builder: (
+  	BuildContext context,
+  	AsyncSnapshot<dynamic> snapshot
+  ) {
+  	/// ...
+  }
+  ```
+
++ **AsyncSnapshot** （即 snapshot）：中封装了三个内容：
+
+  + connectionState（连接状态 - 一共有四个）
+    + **none** ：当前未连接到任何异步计算。
+    + **waiting** ： 连接成功等待交互 
+    + **active** ：正在交互中，可以理解为正在返回数据 
+    + **done** ：交互完成，可以理解为数据返回完成。通过 `snapshot.data` 获取数据
+  + data（实际上就是 future 执行后返回的数据）
+  + error（实际上就是 future 错误时返回的错误信息）
+
+
+
+### 保持页面状态
+
+默认情况，我们进行页面跳转时。都会重新刷新页面（包括请求后代数据接口）。但是，有些页面的数 据不会频繁变化（或及时性要求不高），此时，我们可以将页面数据暂时**保存起来**，从能避免页面频繁 的刷新。
+
+保持页面状态相当于缓存数据，是一种常规的优化手段。具体实现方案有如下几种
+
++ IndexedStack
+
+  IndexedStack 的逻辑是，一次加载多有的 Tab 页面，但同时，只展示其中一个。
+
+  ```dart
+  body: IndexedStack(
+  	index: curIndex,
+  	// children: _listViews,
+  	children: pages.map<Widget>((e) => e['widget']).toList(),
+  )
+  ```
+
+  > 如果希望所有 Tab 页面都保持状态，建议使用 IndexedStack
+
++ AutomaticKeepAliveClientMixin
+
+  ```dart
+  // home page
+  class Home extends StatefulWidget {
+    Home({Key key}) : super(key: key);
+    @override
+    _HomeState createState() => _HomeState();
+  }
+  
+  // 1. 使用 AutomaticKeepAliveClientMixin
+  class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin {
+    @override
+    bool get wantKeepAlive => true; // 2. 声明 wantKeepAlive
+  // 避免 initState 重复调用
+    @override
+    void initState() {
+      super.initState();
+      print('333333');
+    }
+  
+    @override
+    Widget build(BuildContext context) {
+      super.build(context); // 3. 在构造方法中调用父类的 build 方法
+    }
+  
+    /// ...
+  }
+  ```
+
++ Tab 中，只保持某些页面的状态（需要修改 Tab 实现）
+
+  + 声明 PageController
+
+    ```dart
+    PageController _pageController;
+    ```
+
+  + 初始化 PageController
+
+    ```dart
+    @override
+    void initState() {
+    // 2. 初始化 PageController
+      _pageController = PageController(
+          initialPage:
+              G.getCurrentContext().watch<CurrentIndexProvider>().currentIndex);
+      super.initState();
+    }
+    ```
+
+  + 修改 Tab 的 body
+
+    ```dart
+    body: PageView(
+      controller: _pageController,
+      children: pages.map<Widget>((e) => e['page']).toList(),
+    )
+    ```
+
+  + 跳转到指定页面
+
+    ```dart
+    onTap: (index) async {
+    	// 4. 跳转到指定页面
+    	setState(() {
+    		_pageController.jumpToPage(index);
+    	});
+    },
+    ```
+
+    
+
+### DevTools
+
+DevTools 是一套 Dart 和 Flutter 性能调试工具。
+
+在开始 DevTools 之前，我们先来介绍一下 Flutter 的运行模式。 
+
+Flutter 有四种运行模式：Debug、Release、Profile和test，这四种模式在build的时候是完全独立的。
+
++ debug
+
+  Debug 模式可以在真机和模拟器上同时运行：会打开所有的断言，包括 debugging 信息。debug 模式适合调试代码，但是不适合做性能分析。
+
+  > 命令 flutter run 就是以这种模式运行的。
+
++ release
+
+  Release 模式只能在真机上运行，不能在模拟器上运行：会关闭所有断言和 debugging 信息。关闭 所有debugger工具。优化了快速启动、快速执行和减小包体积。
+
+  > 命令 flutter run --release 就是以这种模式运行的
+
++ profile
+
+  Profile 模式只能在真机上运行，不能在模拟器上运行：基本和 Release 模式一致，除了启用了服 务扩展和tracing。
+
+  > 命令 flutter run --profile 就是以这种模式运行的
+
++ test
+
+  headless test 模式只能在桌面上运行：基本和 Debug 模式一致，除了是 headless 的而且你能在 桌面运行。 
+
+  >  命令 flutter test 就是以这种模式运行的
+
+判断当前运行环境
+
+```dart
+// 当 App 运行在 Release 环境时，inProduction 为 true
+// 当 App 运行在 Debug 和 Profile 环境时，inProduction 为 false
+const bool inProduction = const bool.fromEnvironment("dart.vm.product");
+```
+
+
+
+目前，DevTools 支持的功能有如下一些：
+
++ 检查和分析应用程序的UI布局和状态。 
++ 诊断应用的UI 性能问题。 
++ 检测和分析应用程序的CPU使用情况。 
++ 分析应用程序的网络使用情况。 
++ Flutter或Dart应用程序的源代码级调试。 
++ 调试Flutter或Dart应用程序的内存使用情况和分析内存问题。 
++ 查看运行的Flutter或Dart应用程序的一般日志和诊断信息。
+
+
+
+**安装 DevTools**
+
++ 编辑器中
+
+  在 Android Studio 或 VS Code 中，只要你安装了 Flutter 插件，则 DevTools 也已经默认安装了
+
++ 命令行中
+
+  + 如果在你的环境变量 `PATH` 中有 `pub` , 可以运行：
+
+    ```dart
+    pub global activate devtools
+    ```
+
+  + 如果环境变量 `PATH` 中有 `flutter` , 可以运行：
+
+    ```dart
+    flutter pub global activate devtools
+    ```
+
+    
+
+**启动 DevTools**
+
++ VS Code 中
+
+  默认 DevTools 是在 VS Code 中打开的，你也可以在浏览器中打开
+
+  在 VS Code 底部，我们可以看到浏览器上的访问地址（http://127.0.0.1:9100）
+
++ 命令行中
+
+  + 如果在你的环境变量 `PATH` 中有 `pub` , 可以运行：
+
+    ```dart
+    pub global run devtools
+    ```
+
+  + 如果环境变量 `PATH` 中有 `flutter` , 可以运行：
+
+    ```dart
+    flutter pub global run devtools
+    ```
+
+
+
+**启动应用**
+
++ debug 模式启动
+
+  ```dart
+  flutter run
+  ```
+
++ profile 模式启动
+
+  ```dart
+  flutter run --profile
+  ```
+
+**等到应用启动后，可以将应用的调试地址，填写到访问地址（http://127.0.0.1:9100）的输入框中。然后点击 connect，就可以看到 DevTools 页面了。**
+
+
+
+**使用 DevTools**
+
++ Flutter Inspector 
+
+  这是一款用于可视化和浏览 Flutter Widget 树的工具。
+
++ Performance
+
+  性能分析
+
++ CPU Profiler
+
+  CPU 分析器，可以通过此视图记录应用的运行会话，并查看 CPU 在哪些方法中耗费了大量时间， 然后就可以决定应该在哪里进行优化。
+
++ Memory
+
+  查看应用在特定时刻的内存使用情况
+
++ Debugger
+
+  调试器
+
++ Network
+
+  网络请求调试，例如：接口调试，HTTP分析等
+
++ Logging
+
+  查看日志，支持关键词搜索。日志内容包括：
+
+  + Dart 运行时的垃圾回收事件。 
+  + Flutter 框架事件，比如创建帧的事件。 
+  + 应用的 stdout 和 stderr 输出。 
+  + 应用的自定义日志事件。
+
++ App Size
+
+  App 打包后，可以对 APP 的大小进行分析
+
+> 以 profile 方式启动 flutter （flutter run --profile）报错： 
+>
+> **Flutter Profile mode is not supported by sdk gphone x86.** 
+>
+> 原因：模拟器是 x86 的，不支持 profile 方式运行，将模拟器换成 x64 的即可。
