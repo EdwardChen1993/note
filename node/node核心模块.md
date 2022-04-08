@@ -1126,7 +1126,6 @@ const vm = require('vm')
 function Module (id) {
   this.id = id
   this.exports = {}
-  console.log(1111)
 }
 
 Module._resolveFilename = function (filename) {
