@@ -428,3 +428,39 @@ env(safe-area-inset-left, 1.4rem);
 ```
 
 使用 CSS3 实现瀑布流布局，性能高于 js，jq，适合内容是静态内容的时候。缺点是用户体验差，比如：移除数据、更新数据会造成整个页面结构的复杂变化，让用户突然失去焦点的感觉非常不友好！所以使用 js 实现优势也是比较明显的。
+
+
+
+## 背景渐变
+
+linear-gradient() 函数用于创建一个表示两种或多种颜色线性渐变的图片。
+
+创建一个线性渐变，需要指定至少两种颜色，还可以实现不同方向（指定为一个角度）的渐变效果，如果不指定方向，默认从上到下渐变。
+
+```css
+background-image: linear-gradient(direction, color-stop1, color-stop2, ...);
+```
+
+**参数：**
+
+direction：用角度值指定渐变的方向（或角度）。
+
+color-stop1, color-stop2, ...：用于指定渐变的起止颜色。
+
+```css
+/* 从上到下，蓝色渐变到红色 */
+background-image: linear-gradient(blue, red);
+ 
+/* 渐变轴为45度，从蓝色渐变到红色 */
+background-image: linear-gradient(45deg, blue, red);
+ 
+/* 从右下到左上、从蓝色渐变到红色 */
+background-image: linear-gradient(to left top, blue, red);
+ 
+/* 从下到上，从蓝色开始渐变、到高度40%位置是绿色渐变开始、最后以红色结束 */
+background-image: linear-gradient(0deg, blue, green 40%, red);
+
+/* 从左到右，从白色透明底开始渐变到白色实底 */
+background-image: linear-gradient(90deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1));
+```
+
