@@ -1,6 +1,8 @@
 [TOC]
 
-# 空元素
+# html
+
+## 空元素
 
 一个空元素（empty element）可能是 HTML，SVG，或者 MathML 里的一个不能存在子节点（例如内嵌的元素或者元素内的文本）的element。
 
