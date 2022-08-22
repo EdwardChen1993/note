@@ -151,5 +151,16 @@ process.exit(0);
 
 
 
+## cyrpto模块中加密编码 base64 和 base64url 区别
 
+示例：
 
+```js
+const cyrpto = require('cyrpto')
+cyrpto.createHash('md5').update('czh').digest('base64')
+cyrpto.createHash('md5').update('czh').digest('base64url')
+```
+
+base64是使用 `A-Z、a-z、0-9、+、/、=` 64个字符来表示，最后用 `=` 来补齐。
+
+由于 `+、/、=`  在url中都属于特殊字符，用于url的时候都是需要转义的。因此base64url把字符中的  `+` 替换成 `-`， `/ `替换成 `_`，`= `替换成**空**。
