@@ -32,3 +32,26 @@ reader.onload = function () {
 };
 ```
 
+
+
+## while 和 forEach 取出函数执行区别
+
+**示例:** 
+
+```js
+const resolves = [];
+resolves.push(() => console.log(1));
+resolves.push(() => console.log(2));
+resolves.push(() => console.log(3));
+
+while (resolves.length > 0) {
+  const resolve = resolves.shift();
+  resolve();
+}
+
+resolves.forEach((resolve) => resolve());
+```
+
+**区别：**
+
+`forEach`遍历时候每次仅仅取出函数执行，而 `while` 可以在每次取出函数执行之后清除数组中该函数的引用以便垃圾回收，因此 `while` 的性能比 `forEach` 更好。
