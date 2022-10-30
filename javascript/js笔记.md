@@ -54,4 +54,4 @@ resolves.forEach((resolve) => resolve());
 
 **区别：**
 
-`forEach`遍历时候每次仅仅取出函数执行，而 `while` 可以在每次取出函数执行之后清除数组中该函数的引用以便垃圾回收，因此 `while` 的性能比 `forEach` 更好。
+`forEach`遍历时候每次仅仅取出函数执行，而 `while` 可以在每次取出函数执行之后清除数组中该函数的引用以便垃圾回收，因此 `while` 的性能比 `forEach` 更好。`forEach` 若要优化，可以在其后增加 `resolves.length = 0;`

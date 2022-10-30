@@ -361,7 +361,7 @@ export default App;
 import { useHistory, useLocation, useRouteMatch, useParams } from 'react-router-dom';
 ```
 
-![image-20211120171258355](React Hooks.assets/image-20211120171258355.png)
+![image-20211120171258355](react hook.assets/image-20211120171258355.png)
 
 
 
