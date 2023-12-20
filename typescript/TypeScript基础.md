@@ -1120,5 +1120,20 @@ yarn tsc --locale zh-cn
 
 
 
+### 展开查看具体类型
 
+```ts
+interface Props {
+  className?: string;
+  visible?: boolean;
+  show?: boolean;
+  content?: string;
+  text?: string;
+}
+
+type Expand<T> = T extends infer O ? { [K in keyof O]: O[K] } : never;
+type Res = Expand<Omit<Props, 'visible'> | Omit<Props, 'show'>>
+```
+
+[参考链接](https://github.com/microsoft/vscode/issues/94679#issuecomment-755194161)
 
